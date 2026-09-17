@@ -1,0 +1,18 @@
+\chapter{Expected Outcome}
+
+At the completion of this mini-project, the following concrete, evaluable outcomes are expected:
+
+\begin{enumerate}
+    \item A working \textbf{knowledge graph}, populated with transaction, KYC-style, and behavioural data for a representative set of accounts, capable of answering investigative queries such as ``which other accounts share this device or phone number'' and ``what is the shortest connecting path between two flagged accounts,'' including at least one deliberately constructed fraud-ring scenario that is demonstrably detectable through the graph.
+    \item A trained \textbf{transaction risk-scoring model}, evaluated using precision, recall, F1-score, and area-under-precision-recall-curve on a time-respecting train/test split (rather than accuracy, which is not meaningful for the highly imbalanced class distribution typical of fraud data), together with SHAP-based explanations for individual predictions so that any flagged transaction can be justified in human-readable terms.
+    \item A working \textbf{Compliance Assistant} that, given a flagged case, retrieves relevant excerpts from a small corpus of real regulatory documents (such as PMLA 2002 provisions and RBI KYC guidance) and generates a structured, cited Suspicious Activity Report draft, with citations manually verified against the source documents to confirm the system is not fabricating regulatory references.
+    \item A \textbf{demonstration interface} tying the above three components into a single coherent flow -- a transaction receives a risk score with explanation, its network context is visualised from the knowledge graph, and a SAR can be generated for the flagged case -- exercised through a small number of prepared, realistic demo scenarios.
+\end{enumerate}
+
+\section{Expected Impact}
+
+If the three core objectives are met, the resulting prototype is expected to demonstrate, at a small but representative scale, the central claim motivating this project: that a unified, network-aware, explainable approach can substantially reduce false-positive investigation load compared to static rule-based detection, while surfacing coordinated fraud patterns (shared devices, shared identifiers across accounts) that a purely transaction-level system would miss entirely, and while reducing the manual effort required to produce a compliant SAR from hours to minutes.
+
+\section{Known Limitations and Future Work}
+
+As acknowledged in Chapter~2, the present project is validated on public and synthetically augmented data rather than real bank-scale transaction volumes, and the regulatory document corpus used by the Compliance Assistant is necessarily a small representative subset rather than a comprehensive regulatory library. The full six-component agent architecture envisioned in Chapter~5 -- including a dedicated AML network-analysis agent, a continuously updated customer risk profiler, and a fully interactive fraud-investigation graph interface -- is likewise treated as future work beyond the three core objectives delivered here. These limitations are stated explicitly so that the results of this project are interpreted at the scale and scope they were actually evaluated at, with a clear path identified for extending the prototype toward a production-grade system.

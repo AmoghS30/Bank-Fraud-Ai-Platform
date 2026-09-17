@@ -1,0 +1,60 @@
+<mxfile host="65bd71144e">
+    <diagram id="e2eflow-001" name="End-to-End Flow">
+        <mxGraphModel dx="1131" dy="859" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="750" pageHeight="1050" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="End-to-End Flow" style="text;html=0;align=center;verticalAlign=middle;fontSize=17;fontStyle=1;fontColor=#1F497D;" parent="1" vertex="1">
+                    <mxGeometry x="115" y="10" width="520" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="s1" value="1. Transaction Initiated&#xa;Streamed in real time into the intelligence engine" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#4F81BD;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=12;fontStyle=1;arcSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="115" y="80" width="520" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="a1" style="html=1;strokeColor=#1F497D;strokeWidth=3;endArrow=block;endFill=1;" parent="1" source="s1" target="s2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="s2" value="2. Risk Score Computed&#xa;New device, 2:47am, 47x average amount → 0.83 (high risk)" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#4BACC6;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=12;fontStyle=1;arcSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="115" y="170" width="520" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="a2" style="html=1;strokeColor=#1F497D;strokeWidth=3;endArrow=block;endFill=1;" parent="1" source="s2" target="s3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="s3" value="3. Knowledge Graph Queried&#xa;Shared phone/device links to flagged accounts → 0.97 (very high risk)" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#8064A2;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=12;fontStyle=1;arcSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="115" y="260" width="520" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="a3" style="html=1;strokeColor=#1F497D;strokeWidth=3;endArrow=block;endFill=1;" parent="1" source="s3" target="s4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="s4" value="4. AML Network Analysis&#xa;Detects placement + layering + “smurfing” pattern" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#F79646;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=12;fontStyle=1;arcSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="115" y="350" width="520" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="a4" style="html=1;strokeColor=#1F497D;strokeWidth=3;endArrow=block;endFill=1;" parent="1" source="s4" target="s5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="s5" value="5. Auto-Freeze &amp; Alert&#xa;Transaction blocked; analyst dashboard notified" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#C0504D;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=12;fontStyle=1;arcSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="115" y="440" width="520" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="a5" style="html=1;strokeColor=#1F497D;strokeWidth=3;endArrow=block;endFill=1;" parent="1" source="s5" target="s6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="s6" value="6. SAR Auto-Generated&#xa;RAG-grounded compliance draft via LLM (3-4 hrs → 15 min)" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#9BBB59;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=12;fontStyle=1;arcSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="115" y="530" width="520" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="a6" style="html=1;strokeColor=#1F497D;strokeWidth=3;endArrow=block;endFill=1;" parent="1" source="s6" target="s7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="s7" value="7. Analyst Review &amp; Feedback Loop&#xa;Case confirmed/cleared; models retrained" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#1F497D;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=12;fontStyle=1;arcSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="115" y="620" width="520" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="loopback" value="retrains models" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#1F497D;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontColor=#1F497D;fontStyle=2;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="s7" target="s1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="675" y="655"/>
+                            <mxPoint x="675" y="115"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

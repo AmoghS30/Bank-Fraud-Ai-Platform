@@ -1,0 +1,11 @@
+\chapter{Objectives}
+
+Based on the problem statement and the scope achievable within the mini-project timeline, the following three objectives have been identified as the core, achievable deliverables of this project:
+
+\begin{enumerate}
+    \item \textbf{Build a unified knowledge graph} that links transaction, KYC, and behavioural data for a chosen set of accounts, so that relationships between accounts (shared devices, shared phone numbers, shared recipients) that are invisible in a purely tabular view become directly queryable.
+    \item \textbf{Implement an AI-based transaction risk-scoring model} (gradient-boosted-tree and/or Graph-Neural-Network driven) that flags suspicious transactions in real time, using both the transaction's own features and context derived from the knowledge graph, together with an explanation for each score produced.
+    \item \textbf{Automate generation of a compliant Suspicious Activity Report (SAR) draft} from flagged cases using a Retrieval-Augmented Generation (RAG) pipeline grounded in real regulatory text, reducing the manual drafting effort currently required of a compliance analyst.
+\end{enumerate}
+
+These three objectives were deliberately scoped to be independently achievable and independently demonstrable, so that the project delivers a working, evaluable result on each even if time constraints limit further extension. Additional capabilities envisioned for a full production platform -- such as a dedicated AML network-analysis agent, a continuously updated customer risk profiler, and an interactive fraud-investigation graph UI -- are discussed as part of the proposed design in Chapter~5, but are treated as stretch goals beyond the three core objectives above.

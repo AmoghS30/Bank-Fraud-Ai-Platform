@@ -1,0 +1,86 @@
+<mxfile host="app.diagrams.net" agent="claude-code" version="24.7.0" type="device">
+  <diagram id="sysarch-001" name="System Architecture">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="AI-Powered Banking Fraud &amp; Compliance Intelligence Platform&#10;System Architecture" style="text;html=0;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#1F497D;" vertex="1" parent="1">
+          <mxGeometry x="60" y="10" width="780" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 1 -->
+        <mxCell id="layer1" value="LAYER 1 &#8212; DATA INGESTION&#10;Transactions | KYC Profiles | Behaviour Logs | Watchlists" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#4F81BD;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="780" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1F497D;strokeWidth=3;endArrow=block;endFill=1;" edge="1" parent="1" source="layer1" target="layer2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 2 -->
+        <mxCell id="layer2" value="LAYER 2 &#8212; INTELLIGENCE ENGINE&#10;Knowledge Graph  +  RAG / LLM Core" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#4BACC6;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="200" width="780" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1F497D;strokeWidth=3;endArrow=block;endFill=1;" edge="1" parent="1" source="layer2" target="layer3container">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 3 container -->
+        <mxCell id="layer3container" value="LAYER 3 &#8212; AI AGENT LAYER" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#8064A2;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;arcSize=6;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="320" width="780" height="230" as="geometry" />
+        </mxCell>
+
+        <mxCell id="agent1" value="Fraud Detection Engine&#10;GNN + anomaly detection" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#8064A2;strokeWidth=1.5;fontColor=#333333;fontSize=11;fontStyle=1;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="360" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="agent2" value="AML Intelligence Agent&#10;Network graph analysis" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#8064A2;strokeWidth=1.5;fontColor=#333333;fontSize=11;fontStyle=1;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="360" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="agent3" value="Transaction Risk Scoring&#10;Real-time score per txn" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#8064A2;strokeWidth=1.5;fontColor=#333333;fontSize=11;fontStyle=1;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="600" y="360" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="agent4" value="Compliance Assistant&#10;SAR/CTR auto-generation" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#8064A2;strokeWidth=1.5;fontColor=#333333;fontSize=11;fontStyle=1;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="450" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="agent5" value="Customer Risk Profiler&#10;Behavioural profiling" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#8064A2;strokeWidth=1.5;fontColor=#333333;fontSize=11;fontStyle=1;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="450" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="agent6" value="Fraud Investigation Graph&#10;Visual case exploration" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#8064A2;strokeWidth=1.5;fontColor=#333333;fontSize=11;fontStyle=1;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="600" y="450" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1F497D;strokeWidth=3;endArrow=block;endFill=1;" edge="1" parent="1" source="layer3container" target="layer4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 4 -->
+        <mxCell id="layer4" value="LAYER 4 &#8212; ACTIONS &amp; OUTPUTS&#10;Analyst Dashboard | Auto-block/Freeze | Regulatory Filing | Case Management" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#F79646;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="580" width="780" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1F497D;strokeWidth=3;endArrow=block;endFill=1;" edge="1" parent="1" source="layer4" target="feedback">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- FEEDBACK LOOP -->
+        <mxCell id="feedback" value="FEEDBACK LOOP &#8212; analyst decisions retrain models; the system improves with every confirmed fraud &amp; cleared false positive" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#C0504D;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=12;fontStyle=1;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="700" width="780" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Feedback loop back to Layer 1 -->
+        <mxCell id="loopback" value="retrains" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#C0504D;strokeWidth=2.5;dashed=1;endArrow=block;endFill=1;fontColor=#C0504D;fontStyle=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="feedback" target="layer1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="20" y="735" />
+              <mxPoint x="20" y="120" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

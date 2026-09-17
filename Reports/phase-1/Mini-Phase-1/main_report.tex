@@ -1,0 +1,96 @@
+% Mini Project Synopsis Template - Main File
+
+\documentclass[12pt,a4paper,twoside]{report}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{color}
+\usepackage{amssymb}
+\usepackage{chngcntr}
+\usepackage{cite}
+\usepackage{fancyhdr}
+\usepackage[export]{adjustbox}
+\usepackage[compact]{titlesec}
+\usepackage{tabularx}
+\usepackage{layout}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage[toc,page]{appendix}
+\usepackage[normalem]{ulem}
+\usepackage{booktabs}
+\usepackage{rotating}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{pdflscape}
+\usepackage[english]{babel}
+\usepackage[autostyle, english = american]{csquotes}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\MakeOuterQuote{"}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{red},
+    showstringspaces=false
+}
+
+\renewcommand{\bibname}{References}
+
+\setlength{\voffset}{-0.75in}
+\setlength{\headsep}{10pt}
+\setlength{\parindent}{0cm}
+
+\titlespacing{\section}{0pt}{0pt}{0pt}
+\counterwithin{figure}{chapter}
+\numberwithin{equation}{chapter}
+\renewcommand{\baselinestretch}{1.2}
+\renewcommand{\thetable}{\arabic{chapter}.\arabic{table}}
+\renewcommand{\footrulewidth}{0.4pt}
+\textheight 245mm \textwidth 160mm \topmargin 15mm\setlength{\oddsidemargin}{.1in}
+\evensidemargin .1in
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{0pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{0pt}{0pt}
+\pagestyle{fancy}
+\cfoot{}
+\lhead{{\footnotesize AI-Powered Banking Fraud \& Compliance Intelligence Platform}}
+\lfoot{Dept. of CSE, S.I.T., Tumakuru-03}
+\rfoot{\thepage}
+\rhead{2026-27}
+\linespread{1.5}
+\numberwithin{equation}{chapter}
+\let\cleardoublepage\clearpage
+\bibliographystyle{unsrt}
+
+
+\begin{document}
+\addtocontents{toc}{\protect\thispagestyle{empty}}
+
+\input{cover_page.tex}
+
+\pagenumbering{roman}
+\tableofcontents
+\thispagestyle{empty}
+
+\cleardoublepage
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\input{introduction.tex}
+\input{literature_survey.tex}
+\input{problem_statement.tex}
+\input{objectives.tex}
+\input{proposed_design.tex}
+\input{expected_outcome.tex}
+\input{bibliography.tex}
+
+\end{document}

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="926" viewBox="0 0 1120 926">
+<rect x="0" y="0" width="1120" height="926" fill="#FBFCFD"/>
+<text x="64" y="44" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="700" font-style="normal" fill="#64748B" text-anchor="start" letter-spacing="1.6">END-TO-END FLOW</text>
+<text x="64" y="76" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="700" font-style="normal" fill="#0F172A" text-anchor="start">Anatomy of a Money-Mule Fraud Case</text>
+<text x="64" y="100" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" font-style="normal" fill="#64748B" text-anchor="start">₹4.2L overseas wire transfer — from transaction to closed, compliant case</text>
+<line x1="92" y1="206.0" x2="92" y2="268.0" stroke="#E2E8F0" stroke-width="2"/>
+<path d="M 88 268.0 L 96 268.0 L 92 276.0 Z" fill="#64748B"/>
+<rect x="140" y="150" width="916" height="76" rx="8" ry="8" fill="#FFFFFF" stroke="rgba(44,82,130,0.35)" stroke-width="1.25"/>
+<rect x="140" y="150" width="3" height="76" rx="1.5" ry="1.5" fill="#2C5282" stroke="none" stroke-width="1"/>
+<circle cx="92" cy="188.0" r="18" fill="#2C5282"/>
+<text x="92" y="193.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle">01</text>
+<rect x="164" y="164" width="57.2" height="20" rx="10" ry="10" fill="#2C5282" stroke="none" stroke-width="1"/>
+<text x="192.6" y="178" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.4">DATA</text>
+<text x="231.2" y="178" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" font-style="normal" fill="#0F172A" text-anchor="start">Transaction Initiated</text>
+<text x="164" y="208" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" font-style="normal" fill="#64748B" text-anchor="start">Streamed in real time to the intelligence engine</text>
+<line x1="92" y1="312.0" x2="92" y2="374.0" stroke="#E2E8F0" stroke-width="2"/>
+<path d="M 88 374.0 L 96 374.0 L 92 382.0 Z" fill="#64748B"/>
+<rect x="140" y="256" width="916" height="76" rx="8" ry="8" fill="#FFFFFF" stroke="rgba(91,75,138,0.35)" stroke-width="1.25"/>
+<rect x="140" y="256" width="3" height="76" rx="1.5" ry="1.5" fill="#5B4B8A" stroke="none" stroke-width="1"/>
+<circle cx="92" cy="294.0" r="18" fill="#5B4B8A"/>
+<text x="92" y="299.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle">02</text>
+<rect x="164" y="270" width="94.4" height="20" rx="10" ry="10" fill="#5B4B8A" stroke="none" stroke-width="1"/>
+<text x="211.2" y="284" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.4">AI AGENT</text>
+<text x="268.4" y="284" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" font-style="normal" fill="#0F172A" text-anchor="start">Risk Score Computed</text>
+<text x="164" y="314" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" font-style="normal" fill="#64748B" text-anchor="start">Device, time &amp; amount deviate from baseline</text>
+<line x1="92" y1="418.0" x2="92" y2="480.0" stroke="#E2E8F0" stroke-width="2"/>
+<path d="M 88 480.0 L 96 480.0 L 92 488.0 Z" fill="#64748B"/>
+<rect x="140" y="362" width="916" height="76" rx="8" ry="8" fill="#FFFFFF" stroke="rgba(15,118,110,0.35)" stroke-width="1.25"/>
+<rect x="140" y="362" width="3" height="76" rx="1.5" ry="1.5" fill="#0F766E" stroke="none" stroke-width="1"/>
+<circle cx="92" cy="400.0" r="18" fill="#0F766E"/>
+<text x="92" y="405.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle">03</text>
+<rect x="164" y="376" width="131.6" height="20" rx="10" ry="10" fill="#0F766E" stroke="none" stroke-width="1"/>
+<text x="229.8" y="390" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.4">INTELLIGENCE</text>
+<text x="305.6" y="390" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" font-style="normal" fill="#0F172A" text-anchor="start">Knowledge Graph Queried</text>
+<text x="164" y="420" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" font-style="normal" fill="#64748B" text-anchor="start">Shared device &amp; phone links to flagged accounts</text>
+<line x1="92" y1="524.0" x2="92" y2="586.0" stroke="#E2E8F0" stroke-width="2"/>
+<path d="M 88 586.0 L 96 586.0 L 92 594.0 Z" fill="#64748B"/>
+<rect x="140" y="468" width="916" height="76" rx="8" ry="8" fill="#FFFFFF" stroke="rgba(91,75,138,0.35)" stroke-width="1.25"/>
+<rect x="140" y="468" width="3" height="76" rx="1.5" ry="1.5" fill="#5B4B8A" stroke="none" stroke-width="1"/>
+<circle cx="92" cy="506.0" r="18" fill="#5B4B8A"/>
+<text x="92" y="511.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle">04</text>
+<rect x="164" y="482" width="94.4" height="20" rx="10" ry="10" fill="#5B4B8A" stroke="none" stroke-width="1"/>
+<text x="211.2" y="496" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.4">AI AGENT</text>
+<text x="268.4" y="496" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" font-style="normal" fill="#0F172A" text-anchor="start">AML Network Mapped</text>
+<text x="164" y="526" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" font-style="normal" fill="#64748B" text-anchor="start">Layering and structuring pattern identified</text>
+<line x1="92" y1="630.0" x2="92" y2="692.0" stroke="#E2E8F0" stroke-width="2"/>
+<path d="M 88 692.0 L 96 692.0 L 92 700.0 Z" fill="#64748B"/>
+<rect x="140" y="574" width="916" height="76" rx="8" ry="8" fill="#FFFFFF" stroke="rgba(180,83,9,0.35)" stroke-width="1.25"/>
+<rect x="140" y="574" width="3" height="76" rx="1.5" ry="1.5" fill="#B45309" stroke="none" stroke-width="1"/>
+<circle cx="92" cy="612.0" r="18" fill="#B45309"/>
+<text x="92" y="617.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle">05</text>
+<rect x="164" y="588" width="75.8" height="20" rx="10" ry="10" fill="#B45309" stroke="none" stroke-width="1"/>
+<text x="201.9" y="602" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.4">ACTION</text>
+<text x="249.8" y="602" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" font-style="normal" fill="#0F172A" text-anchor="start">Transaction Auto-Frozen</text>
+<text x="164" y="632" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" font-style="normal" fill="#64748B" text-anchor="start">Funds blocked before settlement completes</text>
+<line x1="92" y1="736.0" x2="92" y2="798.0" stroke="#E2E8F0" stroke-width="2"/>
+<path d="M 88 798.0 L 96 798.0 L 92 806.0 Z" fill="#64748B"/>
+<rect x="140" y="680" width="916" height="76" rx="8" ry="8" fill="#FFFFFF" stroke="rgba(91,75,138,0.35)" stroke-width="1.25"/>
+<rect x="140" y="680" width="3" height="76" rx="1.5" ry="1.5" fill="#5B4B8A" stroke="none" stroke-width="1"/>
+<circle cx="92" cy="718.0" r="18" fill="#5B4B8A"/>
+<text x="92" y="723.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle">06</text>
+<rect x="164" y="694" width="94.4" height="20" rx="10" ry="10" fill="#5B4B8A" stroke="none" stroke-width="1"/>
+<text x="211.2" y="708" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.4">AI AGENT</text>
+<text x="268.4" y="708" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" font-style="normal" fill="#0F172A" text-anchor="start">SAR Draft Generated</text>
+<text x="164" y="738" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" font-style="normal" fill="#64748B" text-anchor="start">RAG-grounded narrative, ready for analyst review</text>
+<rect x="140" y="786" width="916" height="76" rx="8" ry="8" fill="#FFFFFF" stroke="rgba(44,82,130,0.35)" stroke-width="1.25"/>
+<rect x="140" y="786" width="3" height="76" rx="1.5" ry="1.5" fill="#2C5282" stroke="none" stroke-width="1"/>
+<circle cx="92" cy="824.0" r="18" fill="#2C5282"/>
+<text x="92" y="829.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle">07</text>
+<rect x="164" y="800" width="94.4" height="20" rx="10" ry="10" fill="#2C5282" stroke="none" stroke-width="1"/>
+<text x="211.2" y="814" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" font-style="normal" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.4">FEEDBACK</text>
+<text x="268.4" y="814" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" font-style="normal" fill="#0F172A" text-anchor="start">Analyst Confirms Case</text>
+<text x="164" y="844" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" font-style="normal" fill="#64748B" text-anchor="start">Outcome logged; every model retrains</text>
+<line x1="1056" y1="824.0" x2="1096" y2="824.0" stroke="#2C5282" stroke-width="1.5" stroke-dasharray="5,4"/>
+<line x1="1096" y1="824.0" x2="1096" y2="188.0" stroke="#2C5282" stroke-width="1.5" stroke-dasharray="5,4"/>
+<line x1="1096" y1="188.0" x2="1062" y2="188.0" stroke="#2C5282" stroke-width="1.5" stroke-dasharray="5,4"/>
+<path d="M 1054 183.5 L 1054 192.5 L 1062 188.0 Z" fill="#2C5282"/>
+<rect x="1084" y="416.0" width="24" height="180" rx="0" ry="0" fill="#FBFCFD" stroke="none" stroke-width="1"/>
+<text x="1112" y="506.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="600" font-style="italic" fill="#2C5282" text-anchor="middle" transform="rotate(90 1112 506.0)">Feedback retrains the model for next time</text>
+<text x="64" y="902" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="400" font-style="italic" fill="#64748B" text-anchor="start">Fig. 2 — Case timeline: each stage hands off to the next in milliseconds-to-minutes; the analyst's verdict closes the loop.</text>
+</svg>

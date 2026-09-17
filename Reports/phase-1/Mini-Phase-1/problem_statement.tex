@@ -1,0 +1,18 @@
+\chapter{Problem Statement}
+
+Most banks today continue to rely on rule-based fraud detection systems, in which engineers manually author static rules such as ``flag any transaction above a fixed amount, from an account less than 30 days old, to a recipient in a foreign country.'' While such rules are simple to implement and audit, they suffer from three fundamental flaws that this project directly addresses.
+
+\section{Overwhelming False Positives}
+
+Rule-based systems are notoriously imprecise: over 95\% of all alerts they generate turn out to be false positives, flagging entirely legitimate, innocent transactions. Each such alert still requires a human analyst to investigate, typically taking 30 to 70 minutes per case. The consequences are severe: analysts are buried in low-value investigative work, genuine customers experience frozen accounts and declined transactions for entirely ordinary behaviour, and -- most critically -- real fraud is more likely to slip through because investigative teams are overwhelmed by noise. Industry estimates place the cost of investigating false positives at approximately \$3.5 billion per year across the banking sector.
+
+\section{Purely Reactive Detection}
+
+A rule-based system can only ever react \textit{after} a suspicious transaction has already been attempted; it has no mechanism for recognising that an account is gradually being prepared for fraudulent use over days or weeks based on accumulating behavioural signals. By the time a rule fires, the transaction -- and often the underlying funds -- may already be in motion. There is no equivalent of a predictive, early-warning capability in a purely rule-based architecture.
+
+\section{Completely Siloed Data}
+
+A bank holds an enormous amount of relevant data about each customer: transaction history, KYC documentation, login and device behaviour, geolocation, and customer-service interactions. In practice, these data sources sit in separate systems, owned by separate teams, that rarely communicate with one another. The fraud team examines transactions; the compliance team examines KYC records; the security team examines login and device data -- but no single view brings all of this together. This fragmentation is precisely where sophisticated criminal networks operate undetected: an individual account can look entirely unremarkable in isolation, while sharing a phone number, device fingerprint, or IP address with several other seemingly unrelated accounts reveals a coordinated fraud ring or money-laundering network that no single, siloed system can see.
+
+\vspace{0.3cm}
+\noindent In summary, the problem this project addresses is: \textit{existing fraud and AML systems are reactive, imprecise, and structurally blind to cross-account relationships, resulting in high operational cost, poor customer experience, and continued exposure to sophisticated, network-based financial crime.}
