@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(python3)",
-      "WebSearch",
-      "Bash(python3 -c ' *)"
-    ]
-  }
-}

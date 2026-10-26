@@ -1,0 +1,59 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Data — too large for git (use Git LFS or just keep local)
+data/raw/
+data/processed/
+data/*.csv
+data/*.parquet
+data/*.json
+
+# Model artifacts — large binaries
+risk_model/model.pkl
+risk_model/model.cbm
+risk_model/model.txt
+risk_model/*.pkl
+gnn_model/checkpoints/
+gnn_model/*.pt
+gnn_model/*.pth
+
+# Neo4j local data volume
+neo4j_data/
+
+# Vector store index (rebuilt from source docs)
+compliance_assistant/vector_store/
+
+# Node / frontend
+node_modules/
+dashboard/node_modules/
+dashboard/build/
+dashboard/dist/
+
+# macOS
+.DS_Store
+
+# Claude Code — local machine settings only (project settings.json IS committed)
+.claude/settings.local.json
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Logs
+*.log
+logs/
