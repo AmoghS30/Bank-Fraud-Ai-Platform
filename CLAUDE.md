@@ -393,14 +393,12 @@ The query is constructed from the case context: "SAR filing requirements structu
 
 **Step 4 — Build the SAR generation step with Claude API**
 ```python
-import anthropic
+import boto3
 import os
 
-# Using AWS Bedrock bearer token auth (simpler than IAM key+secret)
-# SDK picks up AWS_BEARER_TOKEN_BEDROCK from environment automatically
-client = anthropic.AnthropicBedrock(
-    aws_region=os.getenv("AWS_REGION", "us-east-1"),
-)
+# boto3 picks up AWS_BEARER_TOKEN_BEDROCK from environment automatically.
+# AnthropicBedrock SDK does NOT support bearer token auth — use boto3 converse API instead.
+client = boto3.client("bedrock-runtime", region_name=os.getenv("AWS_REGION", "ap-south-1"))
 
 system = """You are a compliance analyst. Generate a Suspicious Activity Report.
 Only make claims supported by the provided regulatory excerpts.
@@ -424,12 +422,12 @@ Generate a structured SAR with these sections:
 5. Recommended action
 """
 
-response = client.messages.create(
-    model=os.getenv("BEDROCK_MODEL_ID"),
-    max_tokens=2048,
-    system=system,
-    messages=[{"role": "user", "content": prompt}]
+response = client.converse(
+    modelId=os.getenv("BEDROCK_MODEL_ID"),   # e.g. in.anthropic.claude-sonnet-5
+    system=[{"text": system}],
+    messages=[{"role": "user", "content": [{"text": prompt}]}]
 )
+text = response["output"]["message"]["content"][0]["text"]
 ```
 
 **Step 5 — Verify grounding manually**

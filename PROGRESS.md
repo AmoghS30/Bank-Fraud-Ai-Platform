@@ -4,7 +4,7 @@ Track stage completion here. Update this file as you finish each stage's "Defini
 
 | Stage | Status | Notes |
 |---|---|---|
-| Stage 0 — Environment setup | Not started | |
+| Stage 0 — Environment setup | ✅ Done | Neo4j running (Docker named volume), venv active, Bedrock + Neo4j connections verified |
 | Stage 1 — Knowledge graph (Neo4j) | Not started | |
 | Stage 2 — Risk scoring model (LightGBM) | Not started | |
 | Stage 3 — GNN fraud detection (stretch) | Not started | |

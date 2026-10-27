@@ -1,0 +1,35 @@
+# Stage 0 — core tooling
+python-dotenv==1.0.1
+
+# Stage 1 — data loading and Neo4j
+pandas==2.2.3
+neo4j==5.27.0
+
+# Stage 4 — Bedrock inference (boto3 picks up AWS_BEARER_TOKEN_BEDROCK automatically)
+boto3
+
+# Stage 2 — risk scoring model (add when starting Stage 2)
+# lightgbm==4.5.0
+# scikit-learn==1.5.2
+# shap==0.46.0
+# joblib==1.4.2
+
+# Stage 3 — GNN (add when starting Stage 3, stretch)
+# torch==2.5.1
+# torch-geometric==2.6.1
+
+# Stage 4 — compliance assistant / RAG (add when starting Stage 4)
+# anthropic==0.40.0
+# langchain==0.3.7
+# langchain-community==0.3.7
+# langchain-huggingface==0.1.2
+# sentence-transformers==3.3.1
+# chromadb==0.5.23
+
+# Stage 5 — dashboard backend (add when starting Stage 5)
+# fastapi==0.115.5
+# uvicorn==0.32.1
+
+# Stage 6 — testing
+# pytest==8.3.4
+# httpx==0.28.0
