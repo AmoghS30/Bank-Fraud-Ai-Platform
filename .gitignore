@@ -23,11 +23,11 @@ data/*.csv
 data/*.parquet
 data/*.json
 
-# Model artifacts — large binaries
-risk_model/model.pkl
+# Model artifacts — large binaries (rebuilt by running train.py)
+risk_model/saved/
+risk_model/*.pkl
 risk_model/model.cbm
 risk_model/model.txt
-risk_model/*.pkl
 gnn_model/checkpoints/
 gnn_model/*.pt
 gnn_model/*.pth

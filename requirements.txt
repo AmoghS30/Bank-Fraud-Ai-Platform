@@ -8,11 +8,13 @@ neo4j==5.27.0
 # Stage 4 — Bedrock inference (boto3 picks up AWS_BEARER_TOKEN_BEDROCK automatically)
 boto3
 
-# Stage 2 — risk scoring model (add when starting Stage 2)
-# lightgbm==4.5.0
-# scikit-learn==1.5.2
-# shap==0.46.0
-# joblib==1.4.2
+# Stage 2 — risk scoring model
+lightgbm==4.7.0
+scikit-learn==1.9.1
+shap==0.54.1
+joblib==1.6.0
+matplotlib==3.11.2
+seaborn==0.13.2
 
 # Stage 3 — GNN (add when starting Stage 3, stretch)
 # torch==2.5.1

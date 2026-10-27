@@ -6,7 +6,7 @@ Track stage completion here. Update this file as you finish each stage's "Defini
 |---|---|---|
 | Stage 0 — Environment setup | ✅ Done | Neo4j running (Docker named volume), venv active, Bedrock + Neo4j connections verified |
 | Stage 1 — Knowledge graph (Neo4j) | ✅ Done | 590,540 txs, 13,553 accounts, 975 devices, 61 email domains; fraud ring detection verified; idempotency confirmed |
-| Stage 2 — Risk scoring model (LightGBM) | Not started | |
+| Stage 2 — Risk scoring model (LightGBM) | ✅ Done | ROC-AUC 0.829, AUPRC 0.220; 244 trees; SHAP waterfall + summary plots saved; score_transaction() inference ready |
 | Stage 3 — GNN fraud detection (stretch) | Not started | |
 | Stage 4 — Compliance assistant (RAG + Claude API) | Not started | |
 | Stage 5 — Dashboard + demo | Not started | |
