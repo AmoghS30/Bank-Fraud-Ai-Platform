@@ -394,9 +394,15 @@ The query is constructed from the case context: "SAR filing requirements structu
 **Step 4 — Build the SAR generation step with Claude API**
 ```python
 import anthropic
-client = anthropic.Anthropic()
+import os
 
-# Assemble the prompt
+# Using AWS Bedrock to access Claude
+client = anthropic.AnthropicBedrock(
+    aws_access_key=os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+    aws_region=os.getenv("AWS_REGION", "us-east-1"),
+)
+
 system = """You are a compliance analyst. Generate a Suspicious Activity Report.
 Only make claims supported by the provided regulatory excerpts.
 Cite the source document and section for every regulatory claim."""
@@ -420,7 +426,7 @@ Generate a structured SAR with these sections:
 """
 
 response = client.messages.create(
-    model="claude-opus-4-7",
+    model=os.getenv("BEDROCK_MODEL_ID"),
     max_tokens=2048,
     system=system,
     messages=[{"role": "user", "content": prompt}]
@@ -525,39 +531,6 @@ services:
 
 ---
 
-## MCP Servers — What Each One Does in Context
-
-MCP servers give Claude direct access to your infrastructure and live docs. They're defined in `.claude/settings.json` and load automatically when you open Claude Code in this directory.
-
-**Neo4j MCP (`@neo4j/mcp-server`)**
-Lets Claude run Cypher queries against your local Neo4j instance directly — no copy-pasting queries into the browser. When you say "show me all accounts connected to this device", Claude queries the graph and shows results inline. Install when you start Stage 1.
-```bash
-claude mcp add neo4j npx @neo4j/mcp-server
-```
-
-**Context7 (`@upstash/context7-mcp`)**
-Fetches live, version-accurate docs for any library on demand. This project uses several fast-moving APIs (PyTorch Geometric, LangChain, Neo4j Python driver, FastAPI) — without Context7, Claude will write against outdated method signatures and hallucinate arguments. Install at Stage 0.
-```bash
-claude mcp add context7 -- npx -y @upstash/context7-mcp
-```
-
-**Playwright (`@playwright/mcp`)**
-Gives Claude real browser control — navigate, click, screenshot, read console errors. Only becomes useful at Stage 5 when the React dashboard exists. Use it to verify the graph visualiser renders correctly and the SAR button actually fires.
-```bash
-claude mcp add playwright npx @playwright/mcp@latest
-```
-
-**GitHub (official)**
-PR management, issue tracking, file reads across branches. Standard — install at Stage 0.
-```bash
-claude mcp add github -- npx @modelcontextprotocol/server-github
-```
-
-**HuggingFace (official, beta)**
-Search and download embedding models for the Stage 4 RAG pipeline. Useful when choosing between `all-MiniLM-L6-v2`, `all-mpnet-base-v2`, and others. Install at Stage 4.
-
----
-
 ## Custom Skills — What Each One Does
 
 Skills live in `.claude/commands/` and are invoked with a slash command. They're committed to git so they work on any machine after clone.
@@ -580,7 +553,6 @@ Pulls the 2-hop subgraph around an account from Neo4j and explains every connect
 
 | Skill | Invoke | Use when |
 |---|---|---|
-| `/claude-api` | Writing any code in `compliance_assistant/` | Handles Anthropic SDK patterns correctly — prompt caching, streaming, tool use, model IDs |
 | `/run` | Stage 5 onwards | Starts FastAPI + React dev servers; also useful in Stage 1 to confirm the Neo4j loader completes cleanly |
 | `/verify` | Stage 5/6 | Walk through a full fraud scenario in the running UI — confirms risk scores, graph visualisation, and SAR generation actually work end-to-end |
 | `/code-review` | Before marking any stage done | Especially Stage 2: checks for data leakage in train/test splits, SHAP correctness. Stage 4: checks RAG grounding quality |
@@ -601,7 +573,7 @@ bash scripts/setup-new-machine.sh
 # 2. Fill in real secrets (the script creates .env from .env.example but leaves values blank)
 nano .env   # add ANTHROPIC_API_KEY, NEO4J_PASSWORD, GITHUB_TOKEN, HUGGINGFACE_TOKEN
 
-# 3. Open Claude Code — .claude/settings.json loads MCP servers and permissions automatically
+# 3. Open Claude Code — .claude/settings.json loads permissions automatically
 claude .
 ```
 

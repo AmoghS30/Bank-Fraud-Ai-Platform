@@ -1,6 +1,5 @@
 #!/bin/bash
 # Run this once after cloning the repo on a new machine.
-# It installs MCP servers and sets up the Python environment.
 
 set -e
 
@@ -9,10 +8,8 @@ echo "=== Bank Fraud AI Platform — New Machine Setup ==="
 # 1. Check prerequisites
 echo ""
 echo "Checking prerequisites..."
-command -v node >/dev/null 2>&1 || { echo "ERROR: Node.js not found. Install from https://nodejs.org"; exit 1; }
 command -v python3 >/dev/null 2>&1 || { echo "ERROR: Python 3 not found."; exit 1; }
 command -v docker >/dev/null 2>&1 || { echo "ERROR: Docker not found. Install from https://docker.com"; exit 1; }
-command -v claude >/dev/null 2>&1 || { echo "ERROR: Claude Code CLI not found. Install from https://claude.ai/code"; exit 1; }
 echo "All prerequisites found."
 
 # 2. Copy .env template
@@ -36,14 +33,7 @@ else
   echo "No requirements.txt yet (add packages as you build each stage)."
 fi
 
-# 4. MCP servers — installed at project scope via .claude/settings.json
-# The settings.json in this repo already defines the MCP servers.
-# npx will pull them on first use. But install playwright browsers now:
-echo ""
-echo "Installing Playwright browsers..."
-npx playwright install chromium 2>/dev/null || echo "Playwright install skipped (run manually if needed: npx playwright install)"
-
-# 5. Neo4j via Docker
+# 4. Neo4j via Docker
 echo ""
 echo "Starting Neo4j..."
 if docker ps | grep -q fraud-graph; then
@@ -64,5 +54,5 @@ echo "Neo4j UI: http://localhost:7474"
 
 echo ""
 echo "=== Setup complete ==="
-echo "Next: fill in .env with your API keys, then open Claude Code in this directory."
+echo "Next: fill in .env with your AWS Bedrock credentials and NEO4J_PASSWORD."
 echo "Read PROGRESS.md to see where the project is at, and CLAUDE.md for full context."
