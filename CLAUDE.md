@@ -396,10 +396,9 @@ The query is constructed from the case context: "SAR filing requirements structu
 import anthropic
 import os
 
-# Using AWS Bedrock to access Claude
+# Using AWS Bedrock bearer token auth (simpler than IAM key+secret)
+# SDK picks up AWS_BEARER_TOKEN_BEDROCK from environment automatically
 client = anthropic.AnthropicBedrock(
-    aws_access_key=os.getenv("AWS_ACCESS_KEY_ID"),
-    aws_secret_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
     aws_region=os.getenv("AWS_REGION", "us-east-1"),
 )
 
