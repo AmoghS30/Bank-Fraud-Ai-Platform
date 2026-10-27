@@ -60,23 +60,25 @@ def score_transaction(features: dict) -> dict:
     row = {col: features.get(col, 0) for col in FEATURE_COLS}
     X = pd.DataFrame([row])
 
-    # Encode categoricals as integer codes (matching training order) then predict
-    # via booster directly — sklearn wrapper's pandas category check is too strict
-    # for single-row inference when categories aren't fully present in the input.
+    # Cast categoricals to pd.CategoricalDtype with exactly the training categories.
+    # This lets us call predict_proba via the sklearn wrapper (which applies the correct
+    # categorical splits) instead of encoding to integers and using the raw booster
+    # (which treats integer codes as continuous float values, giving wrong scores).
     for i, col in enumerate(CATEGORICAL_COLS):
         cats = _model._Booster.pandas_categorical[i]
         val = str(X[col].iloc[0])
-        X.loc[:, col] = float(cats.index(val) if val in cats else 0)
+        X[col] = pd.Categorical(
+            [val if val in cats else cats[0]],
+            categories=cats,
+        )
 
-    X_arr = X[FEATURE_COLS].values.astype(np.float64)
-    raw_score = _model._Booster.predict(X_arr)[0]
-    risk_score = float(1.0 / (1.0 + np.exp(-raw_score)))
+    risk_score = float(_model.predict_proba(X)[:, 1][0])
 
-    # SHAP via TreeExplainer (uses booster internals, no sklearn wrapper)
-    sv = _explainer.shap_values(X_arr)
+    # SHAP: pass the same DataFrame so TreeExplainer sees categorical dtype
+    sv = _explainer.shap_values(X)
     if isinstance(sv, list):
         sv = sv[1]
-    shap_vec = sv[0]
+    shap_vec = np.asarray(sv[0])
 
     top_idx = np.argsort(np.abs(shap_vec))[::-1][:5]
     top_features = [
