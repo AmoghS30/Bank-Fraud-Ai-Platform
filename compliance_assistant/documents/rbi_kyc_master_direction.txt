@@ -1,0 +1,164 @@
+Reserve Bank of India
+Master Direction — Know Your Customer (KYC) Direction, 2016
+(Updated as of May 2023)
+DBR.AML.BC.No.81/14.01.001/2015-16
+
+Source: Reserve Bank of India — Official Circular
+www.rbi.org.in
+
+=============================================================
+PART I — PRELIMINARY
+=============================================================
+
+1. Short Title and Commencement
+
+These Directions shall be called the Reserve Bank of India (Know Your Customer (KYC)) Directions, 2016 and shall come into force with effect from February 25, 2016.
+
+2. Applicability
+
+These Directions shall apply to:
+(a) all Commercial Banks (including Regional Rural Banks, Local Area Banks and Small Finance Banks);
+(b) all Primary (Urban) Co-operative Banks/State Co-operative Banks/District Central Co-operative Banks;
+(c) all Non-Banking Financial Companies (including Housing Finance Companies);
+(d) all Payment System Providers;
+(e) all Payment System Participants;
+(f) all Prepaid Payment Instrument Issuers;
+(g) all Non-scheduled UCBs.
+
+=============================================================
+PART II — CUSTOMER DUE DILIGENCE (CDD)
+=============================================================
+
+Section 10 — Customer Acceptance Policy
+
+10.1 Banks/FIs should not open accounts or commence business relationship without completing the Customer Due Diligence (CDD) process.
+
+10.2 No account should be opened in anonymous or fictitious / benami name(s).
+
+10.3 Banks/FIs should not open accounts or commence business relationships where the bank is unable to verify the identity and/or obtain documents required as per the established policy due to non-cooperation of the customer or non-reliability of the data/information furnished to the bank.
+
+10.4 It is important that a proper identification of clients/customers is done and all 'Know Your Customer' information and documents are obtained and verified before opening an account or commencement of business relationship. Banks/FIs should apply the CDD procedure at the account opening stage itself and maintain it on ongoing basis.
+
+Section 11 — Customer Identification Requirements
+
+11.1 Banks/FIs are required to verify the identity of their customers, who are natural persons, by obtaining one Officially Valid Document (OVD) containing identity and current address proof.
+
+Officially Valid Documents (OVDs):
+(i) Passport
+(ii) Driving Licence
+(iii) Proof of possession of Aadhaar number
+(iv) Voter's Identity Card issued by the Election Commission of India
+(v) Job card issued by NREGA duly signed by an officer of the State Government
+(vi) Letter issued by the National Population Register containing details of name and address
+
+11.6 PAN Card: The Permanent Account Number (PAN) shall be obtained for all accounts where income tax (TDS/TCS) is applicable or where transactions are above the prescribed limits.
+
+=============================================================
+PART III — RISK MANAGEMENT AND ENHANCED DUE DILIGENCE
+=============================================================
+
+Section 26 — Risk Categorisation
+
+26.1 Banks/FIs shall prepare a profile for each new/existing customer based on risk categorisation. The customer profile shall contain information relating to customer's identity, social/financial status, nature of business activity, information about his clients' business and their location, the expected origin of funds, the expected average / peak level of monthly / quarterly / annual turnover, etc.
+
+26.2 Based on risk perception, customers may be classified as:
+- LOW RISK: Salaried employees, people belonging to lower economic strata, Government departments, Regulators, Statutory bodies. Documents required: simplified OVD.
+- MEDIUM RISK: Non-individual customers, NRIs, HNIs. Standard CDD applies.
+- HIGH RISK: Politically Exposed Persons (PEPs), those whose accounts show unusual high level of transactions inconsistent with their profile, customers from jurisdictions that do not apply FATF recommendations, shell companies, and entities suspected of links to money laundering or terrorist financing.
+
+26.3 Enhanced Due Diligence (EDD) measures for HIGH RISK customers:
+(a) Obtaining additional information on the customer, e.g., occupation, volume of business, etc.
+(b) Obtaining information on the source of wealth or source of funds
+(c) Enhanced monitoring of business relationship by increasing the number and timing of controls applied, and selecting patterns of transactions that need further examination
+(d) Obtaining senior management approval for commencing or continuing the business relationship
+(e) Conducting enhanced ongoing due diligence of the business relationship
+
+Section 27 — Suspicious Transaction Monitoring
+
+27.1 Banks/FIs are required to put in place adequate systems to monitor suspicious transactions. Mechanisms used to identify suspicious transactions include, but are not limited to:
+(a) Transactions inconsistent with the customer's risk category
+(b) Transactions inconsistent with the customer's declared occupation/business
+(c) Unusually high cash transactions
+(d) Rapid movement of funds from one account to another
+(e) Multiple accounts operated by related individuals using the same address or device
+(f) Series of cash transactions just below the reporting threshold (structuring)
+(g) Unusual electronic fund transfers to or from foreign countries
+(h) Accounts that show sudden activity after a long dormant period
+
+27.2 Banks/FIs shall promptly report suspicious transactions irrespective of the amount to FIU-IND as per the provisions of the PMLA, 2002 and its Rules.
+
+=============================================================
+PART IV — ANTI-MONEY LAUNDERING MEASURES
+=============================================================
+
+Section 38 — Record Keeping
+
+38.1 Banks/FIs should maintain records of all transactions, particularly of cash transactions above ₹10 lakh and suspicious transactions, for a period of five years from the date of the transaction or the date of cessation of the relationship with the customer, whichever is later.
+
+38.2 Records should be maintained in a manner that allows reconstruction of individual transactions.
+
+Section 40 — Reporting Requirements
+
+40.1 Cash Transaction Reports (CTRs): All cash transactions of the value of more than ₹10 lakh or its equivalent in foreign currency must be reported to FIU-IND on a monthly basis.
+
+40.2 Suspicious Transaction Reports (STRs): All suspicious transactions, whether or not made in cash, must be reported to FIU-IND within 7 working days of forming the suspicion. There is no monetary threshold for STR filing.
+
+40.3 Non-Profit Organisation Transaction Reports (NTRs): All transactions with Non-Profit Organisations of value more than ₹10 lakh or its equivalent in foreign currency must be reported.
+
+40.4 Cross Border Wire Transfer Reports (CBWTRs): All cross border wire transfers of value more than ₹5 lakh or its equivalent in foreign currency must be reported.
+
+Section 42 — Principal Officer
+
+42.1 Each bank/FI must designate a Principal Officer at the management level who shall be responsible for:
+(a) Monitoring transactions
+(b) Sharing information as required under the law
+(c) Taking appropriate corrective action if the system throws up any unusual transactions
+(d) Filing STRs and other reports with FIU-IND
+
+42.2 The Principal Officer shall have access to all customer transaction information and such information shall be shared with FIU-IND on a need-to-know basis.
+
+=============================================================
+PART V — CORRESPONDENT BANKING AND WIRE TRANSFERS
+=============================================================
+
+Section 51 — Wire Transfers
+
+51.1 Banks/FIs are required to obtain, maintain and transmit information on wire transfers. For all wire transfers above ₹50,000 (or its equivalent in foreign currency), the following information must be maintained:
+(a) Name of the originator
+(b) Originator's account number (or unique transaction reference number if no account is maintained)
+(c) Originator's address
+(d) Name of the beneficiary
+(e) Beneficiary's account number (or unique transaction reference number)
+
+51.2 Banks/FIs should implement risk-based procedures to identify and handle wire transfers that lack required originator or beneficiary information.
+
+=============================================================
+APPENDIX — INDICATORS OF SUSPICIOUS TRANSACTIONS
+(As per RBI circular DBOD.AML.BC No.78/14.01.001/2007-08)
+=============================================================
+
+The following are indicative examples of suspicious transactions. Transactions matching these patterns should be investigated and, if suspicion persists, reported to FIU-IND:
+
+STRUCTURING INDICATORS:
+- Multiple cash deposits just below ₹10 lakh threshold (structuring/smurfing)
+- Splitting a single large transaction into multiple smaller ones
+- Cash deposits to multiple accounts of the same individual
+- Multiple individuals making deposits to the same account
+
+LAYERING INDICATORS:
+- Rapid movement of funds between accounts, particularly if funds are quickly withdrawn
+- Large number of inter-account transfers without clear business purpose
+- Transactions routed through multiple entities before reaching the final beneficiary
+- Wire transfers to or from high-risk jurisdictions with no apparent business justification
+
+IDENTITY/ACCOUNT INDICATORS:
+- Multiple accounts using the same address, phone number, email, or device
+- Accounts opened with different names using the same documentation
+- Transactions inconsistent with the account holder's stated occupation
+- Sudden change in transaction pattern inconsistent with the customer's profile
+
+ELECTRONIC/DIGITAL PAYMENT INDICATORS:
+- Multiple payment accounts linked to the same mobile device or IP address
+- Rapid cycling of funds through digital wallets
+- Transactions from multiple accounts to the same beneficiary merchant
+- High-value digital transactions from accounts with no prior digital activity

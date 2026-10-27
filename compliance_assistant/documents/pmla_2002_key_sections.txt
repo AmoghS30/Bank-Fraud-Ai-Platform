@@ -1,0 +1,137 @@
+Prevention of Money Laundering Act, 2002 (PMLA 2002)
+Government of India — As amended by Finance Act 2015 and Finance Act 2019
+Source: India Code, Ministry of Law and Justice
+
+=============================================================
+CHAPTER I — PRELIMINARY
+=============================================================
+
+Section 2 — Definitions
+
+(1) In this Act, unless the context otherwise requires,—
+
+(i) "attachment" means prohibition of transfer, conversion, disposition or movement of property by an order issued under Chapter III;
+
+(ja) "beneficial owner" means an individual who ultimately owns or controls a client of a reporting entity or the person on whose behalf a transaction is being conducted and includes a person who exercises ultimate effective control over a juridical person;
+
+(u) "proceeds of crime" means any property derived or obtained, directly or indirectly, by any person as a result of criminal activity relating to a scheduled offence or the value of any such property or where such property is taken or held outside the country, then the property equivalent in value held within the country or abroad;
+
+(v) "reporting entity" means a banking company, financial institution, intermediary or a person carrying on a designated business or profession;
+
+(wa) "suspicious transaction" means a transaction whether or not made in cash which, to a person acting in good faith,—
+  (a) gives rise to a reasonable ground of suspicion that it may involve the proceeds of crime; or
+  (b) appears to be made in circumstances of unusual or unjustified complexity; or
+  (c) appears to have no economic rationale or bona fide purpose; or
+  (d) gives rise to a reasonable ground of suspicion that it may involve financing of the activities relating to terrorism;
+
+=============================================================
+CHAPTER II — OFFENCE OF MONEY LAUNDERING AND ATTACHMENT
+=============================================================
+
+Section 3 — Offence of money laundering
+
+Whosoever directly or indirectly attempts to indulge or knowingly assists or knowingly is a party or is actually involved in any process or activity connected with the proceeds of crime including its concealment, possession, acquisition or use and projecting or claiming it as untainted property shall be guilty of offence of money laundering.
+
+Section 4 — Punishment for money laundering
+
+Whoever commits the offence of money laundering shall be punishable with rigorous imprisonment for a term which shall not be less than three years but which may extend to seven years and shall also be liable to fine.
+
+Provided that where the proceeds of crime involved in money laundering relates to any offence specified under paragraph 2 of Part A of the Schedule, the provisions of this section shall have effect as if for the words "which may extend to seven years", the words "which may extend to ten years" had been substituted.
+
+=============================================================
+CHAPTER IV — OBLIGATIONS OF BANKING COMPANIES, FINANCIAL
+INSTITUTIONS AND INTERMEDIARIES
+=============================================================
+
+Section 12 — Obligations of banking companies, financial institutions and intermediaries
+
+(1) Every reporting entity shall—
+  (a) maintain a record of all transactions, including information relating to transactions covered under clause (b), in such manner as to enable it to reconstruct individual transactions;
+  (b) furnish to the Director within such time as may be prescribed, information relating to such transactions, whether attempted or executed, the nature and value of which may be prescribed, either individually or taken together over a period of time, as may be prescribed;
+  (c) verify the identity of its clients in such manner and subject to such conditions, as may be prescribed;
+  (d) identify the beneficial owner, if any, of such client;
+  (e) maintain record of documents evidencing identity of its clients and beneficial owners as well as account files and business correspondence relating to its clients.
+
+(1A) Every reporting entity shall register itself with the Director within such time and in such manner as may be prescribed.
+
+(2) The records referred to in sub-section (1) shall be maintained for a period of five years from the date of transactions between the client and the reporting entity.
+
+Section 12AA — Obligation of reporting entity in respect of certain transactions
+
+(1) Every reporting entity shall, for the purposes of this Act, conduct enhanced due diligence in respect of such categories of clients or transactions as may be prescribed.
+
+(2) Enhanced due diligence referred to in sub-section (1) shall include obtaining adequate information to satisfy itself about the true identity of the client, the nature of its business and any other information about the client which the reporting entity considers it necessary to obtain for the said purpose.
+
+Section 13 — Powers of Director to impose fine
+
+(1) The Director may, by an order in writing, levy a fine on any reporting entity, its designated director on the Board or any of its employees, who or which fails to comply with the obligations specified in section 11A or 12 or 12A or 15 or the rules made thereunder.
+
+(2) The fine referred to in sub-section (1) shall not be less than ten thousand rupees but may extend to one lakh rupees for each failure.
+
+=============================================================
+CHAPTER V — SUSPICIOUS TRANSACTION REPORTING
+=============================================================
+
+Section 12A — Suspicious Transaction Reports (STRs)
+
+Every reporting entity shall within such time as may be prescribed, furnish information in respect of—
+
+(i) all such transactions, whether attempted or executed, where the reporting entity has reasonable grounds to believe that the transaction involves proceeds of crime; this includes but is not limited to:
+  - Transactions that have no apparent economic or visible lawful purpose
+  - Transactions that appear designed to circumvent reporting thresholds (structuring/smurfing)
+  - Rapid movement of funds with no plausible business reason
+  - Multiple transactions with the same counterparty using multiple accounts
+  - Transactions inconsistent with a customer's known business or financial profile
+
+(ii) transactions referred to in clause (b) of sub-section (1) of section 12;
+
+Format of Suspicious Transaction Report (STR):
+A Suspicious Transaction Report must contain:
+  1. Details of the reporting entity (name, registered address, FIU registration number)
+  2. Subject information (account holder name, account number, date of account opening, type of account)
+  3. Transaction details (date, amount, type, description of suspicious activity)
+  4. Grounds for suspicion (specific observations that triggered the report)
+  5. Regulatory basis (relevant PMLA provisions and RBI/SEBI guidelines)
+  6. Action taken or recommended
+  7. Declaration by the Principal Officer
+
+Timeline: STRs must be submitted to FIU-IND within 7 days of the date the reporting entity concludes that the transaction is suspicious.
+
+=============================================================
+THE SCHEDULE — PART A: PARAGRAPH 2
+(Offences where punishment may extend to 10 years)
+=============================================================
+
+Offences under:
+- Section 132 of the Customs Act (making false declarations)
+- The Narcotic Drugs and Psychotropic Substances Act, 1985
+- The Explosives Act, 1884
+- The Arms Act, 1959
+- The Wildlife (Protection) Act, 1972
+- Section 3 and 4 of the Prevention of Corruption Act, 1988
+
+=============================================================
+FIU-IND GUIDELINES ON STR FILING (2023)
+Financial Intelligence Unit — India
+=============================================================
+
+Key requirements for a valid STR submission:
+
+1. THRESHOLD: There is NO minimum threshold for STR filing. Any suspicious transaction, regardless of amount, must be reported.
+
+2. TIMING: STR must be filed within 7 working days of the reporting entity forming a suspicion.
+
+3. CONTENT REQUIREMENTS:
+   - Full customer identification (name, PAN, Aadhaar, address)
+   - Account details and transaction history for the suspicious period
+   - Description of suspicious activity in clear, factual terms
+   - Specific regulatory provisions that apply
+   - Details of any structuring patterns observed
+
+4. STRUCTURING (SMURFING): When a customer breaks a large transaction into multiple smaller ones to avoid reporting thresholds (currently ₹10 lakh for cash transactions), this constitutes structuring and must be reported even when individual transactions are below the threshold.
+
+5. LAYERING: Multiple accounts or intermediaries used to obscure the origin of funds. Any transaction pattern suggesting layering must be reported.
+
+6. TIPPING OFF: It is a criminal offence under PMLA to inform the subject of an STR that a report has been or will be filed.
+
+7. CONFIDENTIALITY: STRs are confidential. FIU-IND is the sole recipient.

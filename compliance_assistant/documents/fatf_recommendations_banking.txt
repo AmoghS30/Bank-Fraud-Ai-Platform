@@ -1,0 +1,170 @@
+Financial Action Task Force (FATF)
+The FATF Recommendations — International Standards on Combating Money Laundering
+and the Financing of Terrorism & Proliferation
+Updated October 2023
+
+Source: FATF-GAFI.ORG — Public document
+www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html
+
+=============================================================
+INTRODUCTION
+=============================================================
+
+The FATF Recommendations set out a comprehensive and consistent framework of measures which countries should implement in order to combat money laundering and terrorist financing, as well as the financing of proliferation of weapons of mass destruction.
+
+Countries have diverse legal, administrative and operational frameworks and different financial systems, and so cannot all take identical measures to counter these threats. The FATF Recommendations, therefore, set an international standard, which countries should implement through measures adapted to their particular circumstances.
+
+=============================================================
+RECOMMENDATION 10 — CUSTOMER DUE DILIGENCE
+=============================================================
+
+Financial institutions should be prohibited from keeping anonymous accounts or accounts in obviously fictitious names.
+
+Financial institutions should be required to undertake customer due diligence (CDD) measures when:
+(a) establishing business relations;
+(b) carrying out occasional transactions: (i) above the applicable designated threshold (USD/EUR 15,000); or (ii) that are wire transfers in the circumstances covered by the Interpretive Note to Recommendation 16;
+(c) there is a suspicion of money laundering or terrorist financing; or
+(d) the financial institution has doubts about the veracity or adequacy of previously obtained customer identification data.
+
+CDD measures to be taken:
+(a) Identifying the customer and verifying that customer's identity using reliable, independent source documents, data or information.
+(b) Identifying the beneficial owner, and taking reasonable measures to verify the identity of the beneficial owner.
+(c) Understanding and, as appropriate, obtaining information on the purpose and intended nature of the business relationship.
+(d) Conducting ongoing due diligence on the business relationship and scrutiny of transactions undertaken throughout the course of that relationship.
+
+=============================================================
+RECOMMENDATION 20 — REPORTING OF SUSPICIOUS TRANSACTIONS
+=============================================================
+
+If a financial institution suspects or has reasonable grounds to suspect that funds are the proceeds of a criminal activity, or are related to terrorist financing, it should be required, directly by law or regulation, to report promptly its suspicions to the financial intelligence unit (FIU).
+
+Key requirements for STR compliance:
+1. The threshold for reporting is SUSPICION, not proof. A financial institution is not required to prove the funds are illicit — it only needs to have reasonable grounds for suspicion.
+2. Reports must be made promptly — most jurisdictions require filing within 3–7 business days of forming a suspicion.
+3. TIPPING OFF is prohibited — the institution must not disclose to the customer or any third party that a report has been made.
+4. SAFE HARBOUR protection — financial institutions and their employees are protected from liability for good-faith STR filings, even if the suspicion ultimately proves unfounded.
+
+=============================================================
+RECOMMENDATION 26 — REGULATION AND SUPERVISION OF
+FINANCIAL INSTITUTIONS
+=============================================================
+
+Countries should ensure that financial institutions are subject to adequate regulation and supervision and are effectively implementing the FATF Recommendations.
+
+Supervisory requirements include:
+- Requiring financial institutions to have effective AML/CFT programmes
+- Conducting regular inspections to verify compliance
+- Imposing sanctions for non-compliance
+- Ensuring financial institutions have adequate internal controls, compliance management, and independent audit functions
+
+=============================================================
+FATF TYPOLOGIES — MONEY LAUNDERING METHODS IN BANKING
+(Excerpted from "Money Laundering Through the Banking Sector", FATF 2022)
+=============================================================
+
+1. SMURFING (STRUCTURING)
+
+Definition: The practice of breaking down a large sum of money into smaller transactions to avoid reporting thresholds. A "smurf" is an individual who makes multiple small transactions on behalf of a criminal organisation.
+
+Indicators:
+- Multiple transactions by the same individual just below the reporting threshold
+- Multiple individuals making deposits to the same account
+- Unusual frequency of transactions inconsistent with the customer's profile
+- Deposits or withdrawals in amounts just below regulatory reporting thresholds (e.g., ₹9,90,000 instead of ₹10,00,000)
+- Multiple transactions on the same day or within a short period that in aggregate exceed the threshold
+
+FATF Recommendation: When a financial institution identifies a pattern consistent with structuring, an STR must be filed even if individual transactions are below the reporting threshold.
+
+2. LAYERING
+
+Definition: Layering is the process of separating illicit proceeds from their source through a series of complex financial transactions designed to disguise the audit trail. It follows placement of illicit funds into the financial system.
+
+Indicators:
+- Series of complex transactions with no apparent legitimate commercial purpose
+- Rapid movement of funds between accounts, particularly if funds are immediately transferred
+- Use of multiple accounts, financial institutions, or jurisdictions to move funds
+- Wire transfers through third-party accounts or shell companies
+- The same amount being transferred between accounts with slight variations
+- Transactions that appear to cancel each other out (round-tripping)
+
+3. INTEGRATION
+
+Definition: Integration is the stage at which laundered funds are reintroduced into the legitimate economy.
+
+Indicators:
+- Purchase of high-value assets (real estate, luxury goods, vehicles) with no apparent legitimate income source
+- Investments in businesses inconsistent with the customer's profile
+- Loan repayments from unexpected sources
+
+4. ACCOUNT TAKEOVER AND MULE ACCOUNTS
+
+Definition: Criminals use compromised accounts (account takeover) or recruit individuals to open accounts in their own names (money mule accounts) to launder proceeds.
+
+Indicators:
+- Multiple accounts using the same contact information (phone, email, device)
+- Accounts receiving funds from multiple sources and immediately forwarding them
+- New account with immediate high-value activity
+- Customer reluctant to provide standard identification documentation
+- Accounts showing unusual activity shortly after opening
+- Multiple accounts operated from the same IP address or device fingerprint
+
+5. DEVICE FINGERPRINT RISK SIGNAL
+
+When multiple accounts share the same device fingerprint (hardware ID, browser fingerprint, or mobile device ID), this is a strong indicator that these accounts are controlled by the same individual or criminal group. Financial institutions should:
+- Flag accounts sharing device identifiers
+- Investigate the network of connected accounts
+- Consider filing a group STR covering all connected accounts
+
+=============================================================
+FATF GUIDANCE ON DIGITAL PAYMENT SERVICES (2023)
+=============================================================
+
+The increasing use of digital payment services creates new money laundering risks:
+
+1. ANONYMOUS DIGITAL PAYMENTS: Prepaid cards and digital wallets may allow limited or no customer identification, enabling anonymous transactions.
+
+2. CROSS-BORDER DIGITAL TRANSFERS: Instant cross-border transfers make tracing the origin and destination of funds more difficult.
+
+3. DIGITAL CURRENCY EXCHANGES: Cryptocurrency exchanges may be used to convert illicit funds to digital assets that are harder to trace.
+
+RED FLAGS FOR DIGITAL PAYMENT FRAUD:
+- High-velocity digital transactions inconsistent with the customer profile
+- Transactions at unusual hours (late night, early morning) inconsistent with the customer's time zone or history
+- Multiple digital payment accounts linked to the same mobile device
+- Sudden increase in transaction frequency following a period of inactivity
+- Transactions to merchants or services inconsistent with the customer's stated occupation
+- Transactions involving anonymous.com or temporary email domains
+
+=============================================================
+FATF GUIDANCE ON RISK-BASED APPROACH FOR THE BANKING SECTOR
+(Excerpted from FATF Guidance, 2014 — still current standard)
+=============================================================
+
+A risk-based approach (RBA) to AML/CFT means that countries, competent authorities, and financial institutions are expected to identify, assess and understand the money laundering and terrorist financing risks to which they are exposed, and take AML/CFT measures commensurate with those risks.
+
+FACTORS INCREASING ML/TF RISK:
+
+Customer Risk Factors:
+- Non-resident customers
+- Private banking customers
+- Companies with nominee shareholders or bearer shares
+- Cash-intensive businesses
+- Those whose business activities are unusual or disproportionate to their wealth
+
+Product/Service/Transaction Risk Factors:
+- Private banking
+- Anonymous transactions
+- Non-face-to-face business relationships or transactions
+- Payments received from unknown or unassociated third parties
+- High-value transactions involving cash
+
+Geographic Risk Factors:
+- Countries identified by FATF as having weak AML/CFT regimes
+- Countries subject to sanctions
+- Countries with high levels of corruption
+
+HIGHER-RISK SITUATIONS requiring Enhanced Due Diligence (EDD):
+When a financial institution identifies a business relationship or occasional transaction presenting a higher risk of money laundering, it should apply EDD measures in addition to its standard CDD procedures. EDD may include:
+- Seeking additional information about the customer and their source of funds/wealth
+- More frequent monitoring of the business relationship
+- Requiring senior management approval for new or continued relationships

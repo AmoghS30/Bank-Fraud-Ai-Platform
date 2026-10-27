@@ -160,6 +160,11 @@ def train():
     joblib.dump(model, f"{SAVED_DIR}/model.pkl")
     print(f"Saved model → {SAVED_DIR}/model.pkl")
 
+    # Save category mappings so inference can use same categories as training
+    cat_map = dict(zip(CATEGORICAL_COLS, model._Booster.pandas_categorical))
+    joblib.dump(cat_map, f"{SAVED_DIR}/cat_map.pkl")
+    print(f"Saved category map → {SAVED_DIR}/cat_map.pkl")
+
     test_df = test_df.copy()
     test_df["risk_score"] = y_prob
     test_df[["TransactionID", "isFraud", "risk_score", "account_id"]].to_csv(

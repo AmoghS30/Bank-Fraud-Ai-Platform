@@ -23,11 +23,12 @@ from features import CATEGORICAL_COLS, FEATURE_COLS
 
 _model = None
 _explainer = None
+_cat_map = None
 _SAVED_DIR = os.path.join(os.path.dirname(__file__), "saved")
 
 
 def _load():
-    global _model, _explainer
+    global _model, _explainer, _cat_map
     if _model is None:
         model_path = os.path.join(_SAVED_DIR, "model.pkl")
         if not os.path.exists(model_path):
@@ -36,6 +37,8 @@ def _load():
             )
         _model = joblib.load(model_path)
         _explainer = shap.TreeExplainer(_model)
+        cat_map_path = os.path.join(_SAVED_DIR, "cat_map.pkl")
+        _cat_map = joblib.load(cat_map_path) if os.path.exists(cat_map_path) else {}
 
 
 def score_transaction(features: dict) -> dict:
@@ -57,12 +60,20 @@ def score_transaction(features: dict) -> dict:
     row = {col: features.get(col, 0) for col in FEATURE_COLS}
     X = pd.DataFrame([row])
 
-    for col in CATEGORICAL_COLS:
-        X.loc[:, col] = X[col].astype("category")
+    # Encode categoricals as integer codes (matching training order) then predict
+    # via booster directly — sklearn wrapper's pandas category check is too strict
+    # for single-row inference when categories aren't fully present in the input.
+    for i, col in enumerate(CATEGORICAL_COLS):
+        cats = _model._Booster.pandas_categorical[i]
+        val = str(X[col].iloc[0])
+        X.loc[:, col] = float(cats.index(val) if val in cats else 0)
 
-    risk_score = float(_model.predict_proba(X)[0, 1])
+    X_arr = X[FEATURE_COLS].values.astype(np.float64)
+    raw_score = _model._Booster.predict(X_arr)[0]
+    risk_score = float(1.0 / (1.0 + np.exp(-raw_score)))
 
-    sv = _explainer.shap_values(X)
+    # SHAP via TreeExplainer (uses booster internals, no sklearn wrapper)
+    sv = _explainer.shap_values(X_arr)
     if isinstance(sv, list):
         sv = sv[1]
     shap_vec = sv[0]
