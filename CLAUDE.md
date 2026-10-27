@@ -4,6 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## Working Style
+
+- **Never make decisions unilaterally** — ask before choosing datasets, libraries, approaches, or anything with a tradeoff. Even small decisions (which model ID to use, which dataset to download, synthetic vs real data) need explicit sign-off.
+- **Never use synthetic/generated data** unless the user explicitly asks for it. Always use real datasets.
+- **No assumptions** — if something is unclear, stop and ask rather than picking the most reasonable option.
+
+---
+
 ## What This Project Is
 
 An AI-Powered Banking Fraud & Compliance Intelligence Platform — a portfolio/academic mini-project that detects fraudulent transactions, maps fraud networks as a knowledge graph, scores transaction risk in real time, and auto-generates regulatory reports (SARs) using RAG + Claude API.
