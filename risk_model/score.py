@@ -14,6 +14,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 
+import warnings
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -67,15 +69,16 @@ def score_transaction(features: dict) -> dict:
     for i, col in enumerate(CATEGORICAL_COLS):
         cats = _model._Booster.pandas_categorical[i]
         val = str(X[col].iloc[0])
-        X[col] = pd.Categorical(
-            [val if val in cats else cats[0]],
-            categories=cats,
-        )
+        X = X.assign(**{col: pd.Categorical(
+            [val if val in cats else cats[0]], categories=cats
+        )})
 
-    risk_score = float(_model.predict_proba(X)[:, 1][0])
-
-    # SHAP: pass the same DataFrame so TreeExplainer sees categorical dtype
-    sv = _explainer.shap_values(X)
+    # LightGBM's _data_from_pandas (basic.py:783) triggers a pandas FutureWarning
+    # about chained assignment inside its own code. Suppress for both calls.
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=FutureWarning)
+        risk_score = float(_model.predict_proba(X)[:, 1][0])
+        sv = _explainer.shap_values(X)
     if isinstance(sv, list):
         sv = sv[1]
     shap_vec = np.asarray(sv[0])

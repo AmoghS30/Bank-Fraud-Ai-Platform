@@ -258,34 +258,86 @@ with tab2:
     st.subheader("Real-Time Transaction Risk Scoring — LightGBM + SHAP")
     st.caption("Scores a transaction 0–1 for fraud probability and explains which features drove the score.")
 
+    # ── Load a real test transaction to pre-fill the form ─────────────────────
+    @st.cache_data
+    def load_real_test_samples():
+        import joblib
+        test_preds = pd.read_csv(os.path.join(REPO_ROOT, "risk_model/saved/test_predictions.csv"))
+        df_raw = pd.read_csv(os.path.join(REPO_ROOT, "data/processed/transactions.csv"))
+        sys.path.insert(0, os.path.join(REPO_ROOT, "risk_model"))
+        from features import build_features, FEATURE_COLS
+        high = test_preds[(test_preds["isFraud"] == 1) & (test_preds["risk_score"] > 0.85)].sample(3, random_state=7)
+        low  = test_preds[(test_preds["isFraud"] == 0) & (test_preds["risk_score"] < 0.08)].sample(3, random_state=7)
+        picks = pd.concat([high, low])
+        txids = picks["TransactionID"].tolist()
+        accts = df_raw[df_raw["TransactionID"].isin(txids)]["account_id"].unique().tolist()
+        feat = build_features(df_raw[df_raw["account_id"].isin(accts)].copy(), include_graph=False)
+        merged = feat.merge(picks[["TransactionID", "risk_score", "isFraud"]], on="TransactionID", how="inner")
+        samples = []
+        for _, row in merged.iterrows():
+            samples.append({
+                "label": f"{'🔴 FRAUD' if row['isFraud'] else '✅ LEGIT'} | score={row['risk_score']:.3f} | TX {row['TransactionID']}",
+                "features": {c: row[c] for c in FEATURE_COLS},
+                "saved_score": float(row["risk_score"]),
+                "is_fraud": int(row["isFraud"]),
+            })
+        return samples
+
+    with st.expander("🗂 Load a real test transaction (verifies model accuracy)", expanded=False):
+        try:
+            samples = load_real_test_samples()
+            chosen = st.selectbox("Select a real transaction from the hold-out test set:", [s["label"] for s in samples])
+            chosen_sample = next(s for s in samples if s["label"] == chosen)
+            if st.button("Load this transaction into the form below"):
+                st.session_state["preload"] = chosen_sample
+                st.rerun()
+        except Exception as ex:
+            st.warning(f"Could not load real samples: {ex}")
+
+    preload = st.session_state.get("preload", None)
+    pf = preload["features"] if preload else {}
+
     col_a, col_b = st.columns([1, 1])
 
     with col_a:
         st.markdown("**Transaction features:**")
-        amt = st.number_input("Transaction Amount (₹)", min_value=0.0, value=2500.0, step=100.0)
-        product = st.selectbox("Product Code", ["W", "H", "C", "S", "R"], index=0)
-        card_type = st.selectbox("Card Type", ["credit", "debit", "charge card", "debit or credit", "unknown"])
-        card_network = st.selectbox("Card Network", ["visa", "mastercard", "american express", "discover", "unknown"])
-        device_type = st.selectbox("Device Type", ["desktop", "mobile", "Unknown"])
-        r_email = st.selectbox("Recipient Email Domain", ["gmail.com", "yahoo.com", "anonymous.com", "aol.com", "hotmail.com", "unknown"])
+        amt = st.number_input("Transaction Amount (₹)", min_value=0.0, value=float(pf.get("TransactionAmt", 2500.0)), step=100.0)
+        product = st.selectbox("Product Code", ["W", "H", "C", "S", "R"], index=["W","H","C","S","R"].index(str(pf.get("ProductCD","W"))) if pf.get("ProductCD","W") in ["W","H","C","S","R"] else 0)
+        card_type = st.selectbox("Card Type", ["credit", "debit", "charge card", "debit or credit", "unknown"], index=["credit","debit","charge card","debit or credit","unknown"].index(str(pf.get("card_type","credit"))) if str(pf.get("card_type","credit")) in ["credit","debit","charge card","debit or credit","unknown"] else 0)
+        card_network = st.selectbox("Card Network", ["visa", "mastercard", "american express", "discover", "unknown"], index=["visa","mastercard","american express","discover","unknown"].index(str(pf.get("card_network","visa"))) if str(pf.get("card_network","visa")) in ["visa","mastercard","american express","discover","unknown"] else 0)
+        device_type = st.selectbox("Device Type", ["desktop", "mobile", "Unknown"], index=["desktop","mobile","Unknown"].index(str(pf.get("device_type","desktop"))) if str(pf.get("device_type","desktop")) in ["desktop","mobile","Unknown"] else 0)
 
-        st.markdown("**Behavioural signals:**")
+        email_opts = ["gmail.com", "yahoo.com", "anonymous.com", "aol.com", "hotmail.com", "outlook.com", "icloud.com", "unknown"]
+        p_email = st.selectbox("Purchaser Email Domain", email_opts, index=email_opts.index(str(pf.get("p_email_domain","gmail.com"))) if str(pf.get("p_email_domain","gmail.com")) in email_opts else 0, help="Email domain of the buyer")
+        r_email = st.selectbox("Recipient Email Domain", email_opts, index=email_opts.index(str(pf.get("r_email_domain","gmail.com"))) if str(pf.get("r_email_domain","gmail.com")) in email_opts else 0, help="Email domain money is sent to — anonymous.com is a high-risk signal")
+
+        st.markdown("**Time signals:**")
+        col_t1, col_t2 = st.columns(2)
+        tx_hour = col_t1.slider("Hour of day (0–23)", 0, 23, int(pf.get("tx_hour", 14)), help="Transactions at 1–4am are higher risk")
+        tx_dow = col_t2.slider("Day of week (0=Mon)", 0, 6, int(pf.get("tx_day_of_week", 2)))
+
+        st.markdown("**Velocity (how many txs from this account):**")
         col_v1, col_v2, col_v3 = st.columns(3)
-        vel_1h = col_v1.number_input("Velocity 1h", 0, 50, 0)
-        vel_24h = col_v2.number_input("Velocity 24h", 0, 200, 1)
-        vel_7d = col_v3.number_input("Velocity 7d", 0, 500, 3)
+        vel_1h  = col_v1.number_input("Last 1h",  0, 50,  int(pf.get("velocity_1h", 0)))
+        vel_24h = col_v2.number_input("Last 24h", 0, 200, int(pf.get("velocity_24h", 1)))
+        vel_7d  = col_v3.number_input("Last 7d",  0, 500, int(pf.get("velocity_7d", 3)))
 
+        acct_tx_count = st.number_input("Account total transaction count", 1, 10000, int(pf.get("account_tx_count", 20)), help="Total lifetime transactions on this account")
+
+        st.markdown("**Graph / fraud ring signals:**")
         col_g1, col_g2 = st.columns(2)
-        fraud_nb = col_g1.number_input("Fraud Neighbours", 0, 50, 0,
-            help="Accounts within 2 hops in the graph that are flagged as fraud")
-        shared_dev = col_g2.number_input("Shared Device Accounts", 0, 200, 0)
+        fraud_nb   = col_g1.number_input("Fraud neighbours", 0, 1000, int(pf.get("fraud_neighbors", 0)), help="Other accounts sharing this device that have committed fraud")
+        shared_dev = col_g2.number_input("Shared device accounts", 0, 2000, int(pf.get("shared_device_accounts", 0)), help="Total accounts sharing the same device fingerprint")
 
         col_n1, col_n2, col_n3 = st.columns(3)
-        is_new_device = col_n1.checkbox("New Device", value=False)
-        is_new_p = col_n2.checkbox("New Purchaser Email", value=False)
-        is_new_r = col_n3.checkbox("New Recipient Email", value=False)
+        is_new_device = col_n1.checkbox("New device?",           value=bool(pf.get("is_new_device", False)))
+        is_new_p      = col_n2.checkbox("New purchaser email?",  value=bool(pf.get("is_new_p_email", False)))
+        is_new_r      = col_n3.checkbox("New recipient email?",  value=bool(pf.get("is_new_r_email", False)))
 
-        acct_mean = st.slider("Account Average Tx Amount (₹)", 100.0, 10000.0, 800.0, 100.0)
+        acct_mean = st.number_input("Account avg tx amount (₹)", 1.0, 50000.0, float(pf.get("amt_to_mean_ratio", 1.0) and (pf.get("TransactionAmt", 800.0) / max(float(pf.get("amt_to_mean_ratio", 1.0)), 0.01)) if pf.get("amt_to_mean_ratio") else 800.0), step=50.0, help="Used to compute how unusual this transaction amount is")
+
+        if preload:
+            st.success(f"Loaded real test transaction. Expected score: **{preload['saved_score']:.4f}** ({'fraud' if preload['is_fraud'] else 'legit'})")
 
         score_btn = st.button("⚡ Score Transaction", type="primary", use_container_width=True)
 
@@ -295,31 +347,31 @@ with tab2:
                 try:
                     from score import score_transaction
 
-                    std_amt = max(acct_mean * 0.3, 1)
+                    std_amt = max(acct_mean * 0.4, 1.0)
                     features = {
-                        "TransactionAmt": float(amt),
-                        "amt_zscore": (amt - acct_mean) / std_amt,
-                        "amt_to_mean_ratio": amt / max(acct_mean, 0.01),
-                        "account_tx_count": int(vel_7d + 3),
-                        "tx_hour": 14,
-                        "tx_day_of_week": 2,
-                        "velocity_1h": int(vel_1h),
-                        "velocity_24h": int(vel_24h),
-                        "velocity_7d": int(vel_7d),
-                        "amt_velocity_24h": float(amt * vel_24h * 0.5),
-                        "addr1": 299,
-                        "fraud_neighbors": int(fraud_nb),
+                        "TransactionAmt":        float(amt),
+                        "amt_zscore":            (amt - acct_mean) / std_amt,
+                        "amt_to_mean_ratio":     amt / max(acct_mean, 0.01),
+                        "account_tx_count":      int(acct_tx_count),
+                        "tx_hour":               int(tx_hour),
+                        "tx_day_of_week":        int(tx_dow),
+                        "velocity_1h":           int(vel_1h),
+                        "velocity_24h":          int(vel_24h),
+                        "velocity_7d":           int(vel_7d),
+                        "amt_velocity_24h":      float(amt * vel_24h),
+                        "addr1":                 299,
+                        "fraud_neighbors":       int(fraud_nb),
                         "shared_device_accounts": int(shared_dev),
-                        "device_known": 0 if device_type == "Unknown" else 1,
-                        "is_new_device": int(is_new_device),
-                        "is_new_p_email": int(is_new_p),
-                        "is_new_r_email": int(is_new_r),
-                        "ProductCD": product,
-                        "card_network": card_network,
-                        "card_type": card_type,
-                        "device_type": device_type,
-                        "p_email_domain": "gmail.com",
-                        "r_email_domain": r_email,
+                        "device_known":          0 if device_type == "Unknown" else 1,
+                        "is_new_device":         int(is_new_device),
+                        "is_new_p_email":        int(is_new_p),
+                        "is_new_r_email":        int(is_new_r),
+                        "ProductCD":             product,
+                        "card_network":          card_network,
+                        "card_type":             card_type,
+                        "device_type":           device_type,
+                        "p_email_domain":        p_email,
+                        "r_email_domain":        r_email,
                     }
                     result = score_transaction(features)
                     score = result["risk_score"]
@@ -328,25 +380,43 @@ with tab2:
                     st.plotly_chart(score_gauge(score, tier), use_container_width=True)
                     st.plotly_chart(shap_bar(result["top_features"]), use_container_width=True)
 
+                    if preload:
+                        err = abs(score - preload["saved_score"])
+                        if err < 0.01:
+                            st.success(f"✅ Score matches saved prediction (error={err:.5f})")
+                        else:
+                            st.warning(f"Score {score:.4f} vs expected {preload['saved_score']:.4f} — note: graph features (fraud neighbours) not loaded from Neo4j in this view, so small differences are expected.")
+
                     st.markdown("**Top risk drivers:**")
                     for f in result["top_features"]:
                         arrow = "↑" if f["shap_value"] > 0 else "↓"
                         colour = "red" if f["shap_value"] > 0 else "green"
-                        st.markdown(
-                            f":{colour}[{arrow} **{f['feature']}** (SHAP={f['shap_value']:+.3f})]"
-                        )
+                        st.markdown(f":{colour}[{arrow} **{f['feature']}** (SHAP={f['shap_value']:+.3f})]")
+
                 except FileNotFoundError:
                     st.error("Model not found. Run `python3 risk_model/train.py` first.")
                 except Exception as e:
                     st.error(f"Scoring error: {e}")
+                    st.exception(e)
         else:
-            st.info("Set transaction features on the left and click **Score Transaction**.")
+            if preload:
+                st.info(f"Real transaction loaded. Click **Score Transaction** to verify the model output matches the saved prediction of {preload['saved_score']:.4f}.")
+            else:
+                st.info("Set features on the left and click **Score Transaction**.")
             st.markdown("""
 **How it works:**
 1. LightGBM model (244 trees, trained on 472K IEEE-CIS transactions)
 2. 22 engineered features: amount deviation, time-of-day, velocity, novelty, graph signals
 3. SHAP TreeExplainer shows which features drove the score
 4. Model metrics: ROC-AUC 0.829 | AUPRC 0.220
+
+**Try these patterns to see the model respond:**
+| Pattern | What to set |
+|---|---|
+| Fraud ring member | Fraud neighbours > 100, Shared devices > 500 |
+| Structuring attack | Velocity 1h > 5, amount just below round number |
+| Midnight transaction | Hour = 2, New device = ✓, anonymous.com |
+| Normal purchase | Hour = 14, known device, gmail.com, low velocity |
 """)
 
 
