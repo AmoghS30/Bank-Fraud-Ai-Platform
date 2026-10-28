@@ -1,0 +1,28 @@
+Stage 2 — LightGBM Evaluation Report
+========================================
+Dataset:  590,540 transactions | 3.50% fraud rate
+Split:    80% train (472,432) / 20% test (118,108) — time-based
+AUPRC:    0.2198
+ROC-AUC:  0.8286
+
+Best F1 threshold (auto-selected): 0.7445
+
+Threshold 0.7445 (flags 4.7% of transactions)
+              precision    recall  f1-score   support
+
+       legit       0.98      0.96      0.97    114044
+       fraud       0.26      0.36      0.30      4064
+
+    accuracy                           0.94    118108
+   macro avg       0.62      0.66      0.64    118108
+weighted avg       0.95      0.94      0.95    118108
+
+Threshold 0.5000 (flags 15.7% of transactions)
+              precision    recall  f1-score   support
+
+       legit       0.99      0.86      0.92    114044
+       fraud       0.14      0.64      0.23      4064
+
+    accuracy                           0.85    118108
+   macro avg       0.56      0.75      0.57    118108
+weighted avg       0.96      0.85      0.89    118108

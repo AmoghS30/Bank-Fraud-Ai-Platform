@@ -1,0 +1,39 @@
+# Virtual environment
+.venv/
+venv/
+
+# Git
+.git/
+.gitignore
+
+# Raw / large data (processed/ is included, raw/ is not needed)
+data/raw/
+
+# Neo4j local volume (not needed — image uses named volume)
+neo4j_data/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Model training artifacts we don't need at runtime
+risk_model/plots/
+gnn_model/
+
+# Editor / OS
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Secrets (credentials are passed via docker-compose environment)
+.env
+
+# Docs / reports (not needed to run the app)
+project-plan/
+Reports/
+tests/
+scripts/
