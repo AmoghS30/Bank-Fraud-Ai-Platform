@@ -169,6 +169,208 @@ The RAG architecture is critical for trust: Claude is not answering from memory 
 
 ---
 
+## Example Inputs and Expected Outputs — Risk Scorer
+
+Three scenarios showing exactly what to type in the UI and what the model returns.
+
+---
+
+### Scenario A — Critical Fraud (Score ≈ 0.92+)
+
+This represents a stolen credit card being used by a fraudster at 3am, sending money to a disposable email, from a device shared by hundreds of fraud accounts.
+
+| Feature | Value to enter | Why this value screams fraud |
+|---|---|---|
+| `TransactionAmt` | 500.0 | Significant amount |
+| `amt_zscore` | 3.2 | Transaction is 3.2× above this account's normal range |
+| `amt_to_mean_ratio` | 4.1 | This transaction is 4× the account's average spend |
+| `account_tx_count` | 5 | Brand-new account — only 5 lifetime transactions |
+| `tx_hour` | 3 | 3am — owner is asleep, won't notice alert |
+| `tx_day_of_week` | 6 | Sunday — reduced bank monitoring |
+| `velocity_1h` | 8 | 8 transactions in the last hour — card testing |
+| `velocity_24h` | 15 | 15 transactions today |
+| `velocity_7d` | 20 | 20 transactions this week |
+| `amt_velocity_24h` | 4500.0 | $4,500 moved today |
+| `addr1` | -1 | Billing address unknown — AVS bypass attempt |
+| `fraud_neighbors` | 100 | 100 confirmed fraud accounts share this device |
+| `shared_device_accounts` | 500 | 500 accounts use this one device |
+| `device_known` | 0 | Device has never been seen before |
+| `is_new_device` | 1 | First time this account used this device |
+| `is_new_p_email` | 1 | New purchaser email on this account |
+| `is_new_r_email` | 1 | First time money sent to this recipient domain |
+| `ProductCD` | W | Transfer/wallet — irreversible, fraudster favourite |
+| `card_network` | visa | — |
+| `card_type` | credit | Higher limit, delayed billing = victim notices later |
+| `device_type` | mobile | — |
+| `p_email_domain` | gmail.com | — |
+| `r_email_domain` | anonymous.com | Disposable email — strongest single fraud signal |
+
+**Expected output:**
+```
+Risk Score:  0.92 – 0.97
+Risk Tier:   CRITICAL 🔴
+
+Top SHAP drivers:
+  r_email_domain    +0.96   increases_risk   ← anonymous.com is a huge red flag
+  tx_hour           +0.65   increases_risk   ← 3am transaction
+  is_new_device     +0.43   increases_risk   ← first time on this device
+  amt_zscore        +0.31   increases_risk   ← amount far above account's norm
+  velocity_1h       +0.18   increases_risk   ← 8 transactions in 1 hour
+```
+
+---
+
+### Scenario B — Legitimate Transaction (Score ≈ 0.03–0.10)
+
+An established customer making a normal weekday purchase from their usual device to a known email.
+
+| Feature | Value to enter | Why this looks safe |
+|---|---|---|
+| `TransactionAmt` | 45.0 | Small, normal purchase |
+| `amt_zscore` | 0.1 | Right within this account's normal range |
+| `amt_to_mean_ratio` | 1.05 | Essentially the same as the account average |
+| `account_tx_count` | 200 | Well-established account with long history |
+| `tx_hour` | 14 | 2pm — normal business hours |
+| `tx_day_of_week` | 2 | Wednesday |
+| `velocity_1h` | 1 | Just this one transaction in the last hour |
+| `velocity_24h` | 2 | 2 transactions today — completely normal |
+| `velocity_7d` | 8 | About 1 per day this week |
+| `amt_velocity_24h` | 90.0 | $90 total today |
+| `addr1` | 315 | Known billing zip code |
+| `fraud_neighbors` | 0 | No fraud accounts share this device |
+| `shared_device_accounts` | 1 | Only this one account uses this device |
+| `device_known` | 1 | Device seen many times before |
+| `is_new_device` | 0 | Same device this account always uses |
+| `is_new_p_email` | 0 | Same purchaser email as always |
+| `is_new_r_email` | 0 | Sent to the same recipient domain as before |
+| `ProductCD` | C | Lower-risk product category |
+| `card_network` | visa | — |
+| `card_type` | debit | — |
+| `device_type` | desktop | — |
+| `p_email_domain` | gmail.com | — |
+| `r_email_domain` | gmail.com | Normal email domain |
+
+**Expected output:**
+```
+Risk Score:  0.03 – 0.10
+Risk Tier:   LOW 🟢
+
+Top SHAP drivers:
+  r_email_domain    -0.41   decreases_risk   ← gmail.com is normal
+  device_known      -0.28   decreases_risk   ← familiar device
+  fraud_neighbors   -0.22   decreases_risk   ← no fraud ring connections
+  account_tx_count  -0.18   decreases_risk   ← established account
+  tx_hour           -0.12   decreases_risk   ← daytime transaction
+```
+
+---
+
+### Scenario C — Medium Risk (Score ≈ 0.45–0.65)
+
+A real account doing something slightly unusual — not clearly fraud, not clearly safe. This is where the model is most useful: it flags it for human review rather than auto-blocking.
+
+| Feature | Value to enter | What makes it suspicious vs. safe |
+|---|---|---|
+| `TransactionAmt` | 250.0 | Higher than usual for this account |
+| `amt_zscore` | 1.8 | Somewhat above normal but not extreme |
+| `amt_to_mean_ratio` | 2.3 | About 2× the usual spend |
+| `account_tx_count` | 40 | Moderately established account |
+| `tx_hour` | 22 | 10pm — late but not 3am |
+| `tx_day_of_week` | 5 | Saturday |
+| `velocity_1h` | 2 | 2 transactions in last hour — slightly elevated |
+| `velocity_24h` | 4 | 4 today — acceptable |
+| `velocity_7d` | 12 | Normal weekly rate |
+| `amt_velocity_24h` | 600.0 | $600 today — above typical |
+| `addr1` | 299 | Known address |
+| `fraud_neighbors` | 2 | 2 fraud accounts share device — slight concern |
+| `shared_device_accounts` | 5 | 5 accounts on this device — borderline |
+| `device_known` | 1 | Device has been seen before |
+| `is_new_device` | 0 | Same device as usual |
+| `is_new_p_email` | 0 | Same purchaser email |
+| `is_new_r_email` | 1 | Sending to a new recipient for the first time |
+| `ProductCD` | W | Transfer — slightly higher risk category |
+| `card_network` | mastercard | — |
+| `card_type` | credit | — |
+| `device_type` | mobile | — |
+| `p_email_domain` | gmail.com | — |
+| `r_email_domain` | yahoo.com | New recipient, but a normal email domain |
+
+**Expected output:**
+```
+Risk Score:  0.45 – 0.65
+Risk Tier:   MEDIUM 🟡
+
+Top SHAP drivers:
+  is_new_r_email    +0.22   increases_risk   ← new recipient domain
+  tx_hour           +0.14   increases_risk   ← late evening
+  amt_zscore        +0.12   increases_risk   ← slightly above normal amount
+  fraud_neighbors   +0.08   increases_risk   ← 2 fraud accounts on this device
+  device_known      -0.11   decreases_risk   ← familiar device pulls score down
+```
+
+This score sits in the "queue for manual review" zone — an analyst would look at it before deciding whether to block. This is exactly how real bank fraud systems work: auto-block above 0.90, manual review between 0.50–0.90, auto-pass below 0.50.
+
+---
+
+### What the SAR Generator Outputs for ACC_15063
+
+When you click "Generate SAR" for account `ACC_15063` (the demo fraud ring account), here is what gets assembled as input and what Claude returns:
+
+**Input assembled automatically:**
+```
+Account:          ACC_15063
+Transactions:     47 total, highest amount $2,302
+Device:           SM-N920V Build/NRD90M
+Fraud neighbors:  532 accounts share this device and have fraud transactions
+Risk score:       0.72 (on its highest-value transaction)
+Top SHAP drivers: fraud_neighbors (+0.44), r_email_domain (+0.38), tx_hour (+0.29)
+
+Retrieved regulations:
+  [1] PMLA 2002 Section 12A — reporting obligation within 7 days
+  [2] FATF Recommendation 20 — definition of suspicious transactions
+  [3] RBI KYC Master Direction — structuring red flags
+  [4] PMLA 2002 Section 3 — definition of money laundering
+  [5] FATF Recommendation 26 — financial institution monitoring obligations
+```
+
+**Output (abridged):**
+```
+SUSPICIOUS ACTIVITY REPORT
+
+1. SUBJECT INFORMATION
+   Account ID: ACC_15063 | Card type: credit | Total transactions: 47
+
+2. SUMMARY OF SUSPICIOUS ACTIVITY
+   Account ACC_15063 has conducted 47 transactions totalling $X, including
+   high-value transfers to anonymous.com. The account's device is shared with
+   532 confirmed fraud accounts, indicating probable fraud ring membership.
+
+3. TRANSACTION DETAILS
+   [Table of top 5 flagged transactions with amounts and timestamps]
+
+4. NETWORK ANALYSIS
+   Device SM-N920V Build/NRD90M is shared by 1,000+ accounts.
+   532 of those accounts have confirmed fraudulent transactions.
+
+5. REGULATORY BASIS
+   Per PMLA 2002 Section 12A, reporting entities are obligated to file an STR
+   within 7 days of detecting a suspicious transaction. Per FATF Recommendation
+   20, transactions that appear to have no legitimate economic purpose and
+   involve structuring patterns must be reported...
+
+6. AI MODEL EVIDENCE
+   LightGBM risk score: 0.72 (HIGH tier)
+   Primary drivers: fraud network connections (+0.44), anonymous.com
+   recipient (+0.38), late-night timing (+0.29)
+
+7. RECOMMENDED ACTION
+   File STR with FIU-IND within 7 days. Freeze account pending investigation.
+   Escalate device SM-N920V Build/NRD90M — 532 linked fraud accounts warrant
+   a coordinated ring investigation.
+```
+
+---
+
 ## Part 1 — Knowledge Graph (Neo4j)
 
 ### What is a knowledge graph?
