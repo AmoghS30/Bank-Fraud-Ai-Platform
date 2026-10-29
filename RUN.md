@@ -12,7 +12,13 @@ After installing Docker Desktop:
 
 ---
 
-## Step 2 — Clone the repo
+## Step 2 — Get the AWS Bedrock API key from Amogh
+
+The SAR generator needs an AWS key to call Claude. Ask Amogh for the key — he will give you a string starting with `ABSK...`.
+
+---
+
+## Step 3 — Clone the repo
 
 Open **PowerShell** (search "PowerShell" in Start menu) and run:
 
@@ -24,7 +30,25 @@ cd Bank-Fraud-Ai-Platform
 
 ---
 
-## Step 3 — Start everything
+## Step 4 — Create your .env file
+
+Inside the `Bank-Fraud-Ai-Platform` folder, create a file called `.env` (no extension) with this content — replace the key with the one Amogh gave you:
+
+```
+AWS_BEARER_TOKEN_BEDROCK=ABSK...paste_key_here...
+AWS_REGION=ap-south-1
+BEDROCK_MODEL_ID=in.anthropic.claude-sonnet-5
+```
+
+To create it in PowerShell:
+```powershell
+notepad .env
+```
+Paste the lines above, save and close.
+
+---
+
+## Step 5 — Start everything
 
 Still in PowerShell, inside the `Bank-Fraud-Ai-Platform` folder:
 

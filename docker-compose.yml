@@ -32,8 +32,8 @@ services:
       NEO4J_USER: neo4j
       NEO4J_PASSWORD: random123
 
-      # AWS Bedrock (bearer token auth — no access key / secret key needed)
-      AWS_BEARER_TOKEN_BEDROCK: your_bedrock_api_key_here
-      AWS_REGION: ap-south-1
-      BEDROCK_MODEL_ID: in.anthropic.claude-sonnet-5
+      # AWS Bedrock — loaded from .env file (never hardcode credentials here)
+      AWS_BEARER_TOKEN_BEDROCK: ${AWS_BEARER_TOKEN_BEDROCK}
+      AWS_REGION: ${AWS_REGION:-ap-south-1}
+      BEDROCK_MODEL_ID: ${BEDROCK_MODEL_ID:-in.anthropic.claude-sonnet-5}
 
