@@ -29,6 +29,146 @@ Think of it like this: the graph finds *who* is suspicious, the model says *how*
 
 ---
 
+## The Three Deliverables — Inputs, What Happens, and Why It Matters
+
+---
+
+### ① Knowledge Graph — Neo4j
+
+#### What is the input?
+Raw transaction data from the IEEE-CIS dataset. Every row has:
+- An **account ID** (who made the payment)
+- A **device fingerprint** (what phone/laptop they used — e.g. `SM-G960U Build/R16NW`)
+- An **email domain** (where the money was sent — e.g. `anonymous.com`)
+- A **transaction amount and timestamp**
+
+We load 590,540 such rows into Neo4j.
+
+#### What happens in the background?
+Instead of storing this as a flat spreadsheet, we model it as a **graph** — a network of connected nodes:
+
+```
+Account A ──USES_DEVICE──► Device X ◄──USES_DEVICE── Account B
+Account A ──MADE──► Transaction ──TO_EMAIL──► anonymous.com
+```
+
+When we run the query:
+```cypher
+MATCH (a:Account)-[:USES_DEVICE]->(d:Device)<-[:USES_DEVICE]-(b:Account)
+WHERE a <> b
+RETURN a, d, b
+```
+Neo4j instantly shows every pair of accounts that share a device — the textbook signature of a **fraud ring** (one person controlling many fake accounts from the same phone/laptop).
+
+#### What is the output?
+- A **list of linked accounts** — e.g. ACC_15063 shares device `SM-N920V Build/NRD90M` with 1,000+ other accounts, 532 of which have confirmed fraud
+- Two features that feed into the risk model: `fraud_neighbors` (how many device-mates are fraudsters) and `shared_device_accounts` (how many accounts total share that device)
+
+#### Why is it significant?
+A traditional bank system looks at one account at a time. If Account A has no fraud history, it looks clean — even if it shares a device with 532 confirmed fraudsters.
+
+The graph sees the *network*. It finds fraud rings that are invisible in spreadsheet analysis. In real banks, this is how money mule networks and synthetic identity fraud rings are uncovered — not by looking at individual accounts but by mapping the connections between them.
+
+---
+
+### ② Risk Scoring Model — LightGBM
+
+#### What is the input?
+22 features for a single transaction. These come from three sources:
+- **Raw transaction data** — amount, card type, product code, email domains, device type
+- **Computed per-account statistics** — z-score of the amount, velocity counts (transactions in last 1h/24h/7d), account age
+- **Graph features from Neo4j** — `fraud_neighbors`, `shared_device_accounts`
+
+Example input (a suspicious transaction):
+```
+TransactionAmt     = 500.0      ← amount
+amt_zscore         = 3.2        ← 3.2 standard deviations above this account's norm
+velocity_1h        = 8          ← 8 transactions in the last hour
+tx_hour            = 3          ← 3am
+r_email_domain     = anonymous.com
+is_new_device      = 1          ← first time this account used this device
+fraud_neighbors    = 532        ← 532 fraud accounts share this device
+```
+
+#### What happens in the background?
+LightGBM runs the input through **244 decision trees** that were trained on 472,000 historical transactions. Each tree votes on whether this looks like fraud. The votes are combined into a single probability (0 to 1).
+
+Then SHAP (SHapley Additive exPlanations) runs on top — it asks each of the 22 features: *"how much did you personally push the score up or down?"* This gives a per-feature contribution score for every prediction.
+
+```
+Input features
+     │
+     ▼
+244 decision trees vote → probability = 0.92
+     │
+     ▼
+SHAP explains it:
+  r_email_domain   +0.96  ← pushed score UP by 0.96
+  tx_hour          +0.65  ← pushed score UP by 0.65
+  is_new_device    +0.43  ← pushed score UP by 0.43
+  amt_zscore       +0.31  ← pushed score UP by 0.31
+  velocity_1h      +0.18  ← pushed score UP by 0.18
+```
+
+#### What is the output?
+- A **risk score** between 0 and 1 (e.g. 0.92)
+- A **risk tier**: low (< 0.4), medium (0.4–0.7), high (0.7–0.9), critical (≥ 0.9)
+- **Top 5 SHAP drivers** — which features caused this score, with direction and magnitude
+
+#### Why is it significant?
+Two reasons:
+
+**Speed** — the model scores a transaction in under 200ms. A human analyst takes hours to investigate one case. The model can screen all 590,540 transactions in minutes.
+
+**Explainability** — regulators (RBI, FIU-IND) require that every fraud flag be *justified*, not just produced by a black box. SHAP gives a plain-English reason for every score: "Flagged because: sending to anonymous.com (+0.96), transaction at 3am (+0.65), new device (+0.43)." A neural network can't do this. LightGBM + SHAP can.
+
+---
+
+### ③ Compliance Assistant — RAG + Claude
+
+#### What is the input?
+Three things are assembled automatically when you click "Generate SAR":
+
+1. **Account data from Neo4j** — transaction history, total amount, device connections, linked fraud accounts
+2. **Risk model output** — the risk score (e.g. 0.92) and the top SHAP explanation
+3. **Relevant regulation excerpts from ChromaDB** — retrieved by searching 85 chunks of actual legal text (PMLA 2002, RBI KYC Master Direction, FATF Recommendations) using semantic similarity
+
+#### What happens in the background?
+**Step 1 — Retrieval (RAG):**
+The system builds a search query from the case context:
+```
+"suspicious activity structuring multiple transactions PMLA STR filing obligation"
+```
+It converts this query into a 384-dimensional vector using `sentence-transformers/all-MiniLM-L6-v2` and searches ChromaDB for the 5 most similar regulation chunks by cosine similarity.
+
+Example retrieved chunks:
+- PMLA 2002, Section 12A — obligation to report suspicious transactions within 7 days
+- FATF Recommendation 20 — definition of suspicious transaction reporting
+- RBI KYC Master Direction — red flags for structuring and smurfing
+
+**Step 2 — Generation:**
+Claude (via AWS Bedrock) receives a prompt that includes the account data, risk score, SHAP explanation, and retrieved regulation excerpts. The prompt says:
+> "Generate a structured SAR. Cite ONLY regulations present in the provided text. Do not use general knowledge."
+
+Claude writes an 800-word SAR with 7 required sections.
+
+#### What is the output?
+A complete, ready-to-submit Suspicious Activity Report:
+1. Subject information (account, card type, transaction count)
+2. Summary of suspicious activity (plain English)
+3. Transaction details (table of flagged transactions)
+4. Network analysis (fraud ring connections)
+5. Regulatory basis (cited from retrieved PMLA/RBI/FATF text)
+6. AI model evidence (risk score + SHAP drivers)
+7. Recommended action (file STR, freeze account, escalate)
+
+#### Why is it significant?
+A compliance analyst manually writing this SAR takes **2–4 hours** — cross-referencing regulations, pulling transaction records, writing the narrative. Our system does it in **~30 seconds**.
+
+The RAG architecture is critical for trust: Claude is not answering from memory (which could hallucinate wrong section numbers). It retrieves the *actual* legal text and quotes it. Every regulatory citation in the generated SAR can be traced to a real document chunk. This is what makes the output admissible for a real compliance workflow — it's grounded in verified source material, not AI guesswork.
+
+---
+
 ## Part 1 — Knowledge Graph (Neo4j)
 
 ### What is a knowledge graph?
