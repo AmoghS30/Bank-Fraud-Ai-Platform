@@ -280,6 +280,495 @@ A: Two slow steps: (1) loading the sentence-transformers embedding model (~3 sec
 
 ---
 
+---
+
+## Deep Dive — Data, Inputs, Background Processing, and Usefulness
+
+This section explains every part of the system from scratch: what raw data we start with, what input each feature takes, what the code does behind the scenes to compute it, and why it helps catch fraud.
+
+---
+
+### The Raw Dataset — Where Everything Starts
+
+**Dataset:** IEEE-CIS Fraud Detection (Kaggle, 2019)
+**Source:** Vesta Corporation — a real US payment processing company
+**Size:** 590,540 transactions across ~6 months
+
+**What one raw row looks like (simplified):**
+
+| Column | Example value | What it is |
+|---|---|---|
+| TransactionID | 2987000 | Unique ID for this payment |
+| TransactionDT | 86400 | Seconds since a reference point (not a real timestamp — we convert it) |
+| TransactionAmt | 68.5 | Dollar amount |
+| ProductCD | W | Product category code |
+| card1–card6 | 13926, 150, ... | Card number hash, card type, card network, expiry, bank |
+| addr1, addr2 | 315, 87 | Billing zip code area codes |
+| P_emaildomain | gmail.com | Purchaser's email domain |
+| R_emaildomain | anonymous.com | Recipient's email domain |
+| DeviceType | mobile | Desktop or mobile |
+| DeviceInfo | SM-G960U Build/R16NW | Full device fingerprint string |
+| isFraud | 1 | Ground truth label (1 = confirmed fraud) |
+| V1–V339 | 1.0, 0.0, ... | Vesta's proprietary engineered features (we ignore most of these) |
+
+**What we do with it:** We ignore most V-columns (opaque, not explainable) and instead build our own 22 meaningful features from the columns above. This makes the model explainable — we can say *why* it flagged something.
+
+---
+
+### Feature-by-Feature Breakdown
+
+#### Feature 1 — `TransactionAmt`
+
+| | |
+|---|---|
+| **Input range** | $0.50 – $30,000+ (right-skewed, most transactions under $200) |
+| **Typical legit value** | $20–$150 |
+| **Typical fraud value** | $500–$5,000 (fraudsters test stolen cards with large purchases) |
+| **What you enter in the UI** | The raw dollar/rupee amount of the transaction |
+
+**Background processing:** Taken directly from the raw dataset column. No transformation — fed as-is to LightGBM, which learns its own splits (e.g. "amount > $1,200 increases fraud probability by X").
+
+**Why useful:** On its own, amount is a weak signal — legitimate large purchases exist. The model learns it *in combination* with other features. A $5,000 transaction at 3am from a new device is critical-risk; a $5,000 transaction at 2pm from a known device for a regular customer is fine.
+
+---
+
+#### Feature 2 — `amt_zscore`
+
+| | |
+|---|---|
+| **Input range** | Typically –2 to +10 (can go higher for extreme outliers) |
+| **Typical legit value** | –1 to +1 (transaction is near the account's usual range) |
+| **Typical fraud value** | +3 to +8 (transaction is far above the account's norm) |
+| **What you enter in the UI** | How many standard deviations above normal this transaction is |
+
+**Background processing:**
+```
+For each account, compute:
+  mean_amt = average of all past transactions
+  std_amt  = standard deviation of all past transactions
+  amt_zscore = (this_transaction_amt - mean_amt) / std_amt
+```
+Done in `features.py` using a pandas `groupby` on account ID, then joining back.
+
+**Why useful:** This personalises the amount signal. A $500 transaction for an account that normally spends $490 has zscore ≈ 0 (normal). The same $500 for an account that normally spends $12 has zscore ≈ 8 (highly anomalous). Raw amount can't capture this; z-score can.
+
+---
+
+#### Feature 3 — `amt_to_mean_ratio`
+
+| | |
+|---|---|
+| **Input range** | 0.1 to 50+ |
+| **Typical legit value** | 0.5 to 2.0 (within 2× of the usual amount) |
+| **Typical fraud value** | 4.0 to 20+ (4× or more above usual) |
+| **What you enter in the UI** | This transaction's amount divided by the account's average |
+
+**Background processing:**
+```
+amt_to_mean_ratio = TransactionAmt / mean_amt_for_this_account
+```
+Computed alongside z-score in `features.py`. Whereas z-score penalises accounts with low variance, ratio is purely multiplicative — easier to explain to non-technical stakeholders ("this transaction is 7× the customer's usual spend").
+
+**Why useful:** Complements z-score. Together they give the model two perspectives on amount anomaly. Some accounts have very consistent spending (low std) — z-score works well. Others have high variance — ratio works better.
+
+---
+
+#### Feature 4 — `account_tx_count`
+
+| | |
+|---|---|
+| **Input range** | 1 to 500+ |
+| **Typical legit value** | 30–200 (established account with history) |
+| **Typical fraud value** | 1–5 (brand new account, or stolen card used for the first time) |
+| **What you enter in the UI** | Total number of transactions this account has ever made |
+
+**Background processing:**
+```
+account_tx_count = COUNT(*) grouped by account_id over the entire dataset
+```
+Joined back to each transaction row. For real-time deployment, this would be a running counter in a database.
+
+**Why useful:** New accounts are riskier. A stolen card being used for the very first time has `account_tx_count = 1`. Fraudsters also create fake accounts — these also start at 1. An established account with 300 transactions and a consistent history is far less likely to suddenly go fraudulent on this transaction.
+
+---
+
+#### Feature 5 — `tx_hour`
+
+| | |
+|---|---|
+| **Input range** | 0 to 23 |
+| **Typical legit value** | 8 to 22 (normal waking hours) |
+| **Typical fraud value** | 0 to 4 (late night / early morning) |
+| **What you enter in the UI** | Hour of day the transaction happened (0 = midnight, 3 = 3am, 14 = 2pm) |
+
+**Background processing:**
+```
+TransactionDT is seconds since a fixed reference point.
+tx_hour = (TransactionDT // 3600) % 24
+```
+The raw dataset has no real timestamps — `TransactionDT` is a relative counter in seconds. We convert it to hour-of-day by dividing by 3600 (seconds per hour) and taking modulo 24.
+
+**Why useful:** Fraudsters act when victims are asleep and unlikely to notice bank alerts. In the training data, transactions between 1–4am have significantly higher fraud rates. A $2,000 transaction at 3am is far more suspicious than the same transaction at 2pm.
+
+---
+
+#### Feature 6 — `tx_day_of_week`
+
+| | |
+|---|---|
+| **Input range** | 0 (Monday) to 6 (Sunday) |
+| **Typical legit value** | 0–4 (weekdays — people shop during the week) |
+| **Typical fraud value** | 5–6 (weekends — lower bank staffing, slower fraud response) |
+| **What you enter in the UI** | Day of the week (0=Mon, 1=Tue, ..., 6=Sun) |
+
+**Background processing:**
+```
+tx_day_of_week = (TransactionDT // 86400) % 7
+```
+Same `TransactionDT` divided by 86400 (seconds per day), modulo 7.
+
+**Why useful:** Fraud response teams are smaller on weekends. Fraudsters know this. Weekend transactions in combination with other red flags (new device, late hour, anonymous.com recipient) form a strong fraud pattern.
+
+---
+
+#### Feature 7 — `velocity_1h`
+
+| | |
+|---|---|
+| **Input range** | 1 to 20+ |
+| **Typical legit value** | 1 (most people make one transaction at a time) |
+| **Typical fraud value** | 5–15 (many rapid transactions to drain a card or test it) |
+| **What you enter in the UI** | Number of transactions this account made in the last 1 hour |
+
+**Background processing:**
+```
+Sort transactions by time.
+For each transaction T, count how many prior transactions
+from the same account_id fall within [T.time - 3600s, T.time].
+```
+This is a rolling window count. In `features.py` it's done with a sorted merge and cumulative counting per account.
+
+**Why useful:** Fraudsters perform **card testing** — they run many small transactions quickly to check if a stolen card works before making a big purchase. High `velocity_1h` (e.g. 8 transactions in 1 hour) is a classic fraud pattern. Legitimate customers almost never make 8 purchases in an hour.
+
+---
+
+#### Feature 8 — `velocity_24h`
+
+| | |
+|---|---|
+| **Input range** | 1 to 50+ |
+| **Typical legit value** | 1–5 (a few transactions in a day is normal) |
+| **Typical fraud value** | 10–30 (sustained fraud activity over a day) |
+| **What you enter in the UI** | Number of transactions in the last 24 hours |
+
+**Background processing:** Same rolling window approach as `velocity_1h` but with a 24-hour window (86,400 seconds). Computed in the same pass through the sorted data.
+
+**Why useful:** Captures **smurfing** — splitting a large fraudulent transfer into many smaller ones to avoid detection thresholds. If regulations require reporting transactions above ₹10,000, a smurf makes 10 × ₹9,999 transactions across 24 hours. `velocity_24h = 10` combined with `amt_velocity_24h ≈ ₹100,000` is the textbook smurfing signature.
+
+---
+
+#### Feature 9 — `velocity_7d`
+
+| | |
+|---|---|
+| **Input range** | 1 to 200+ |
+| **Typical legit value** | 5–30 (people shop a few times a week) |
+| **Typical fraud value** | 50–150 (sustained campaign — fraudster running a scheme for days) |
+| **What you enter in the UI** | Number of transactions in the last 7 days |
+
+**Background processing:** Rolling window of 7 days (604,800 seconds). Gives the model a longer view of activity patterns.
+
+**Why useful:** Some fraud is not rapid but sustained — a fraudster who gained access to an account slowly draining it over a week. High `velocity_7d` relative to the account's historical norm signals this pattern. Also useful for money mule accounts that process many transactions per week as part of a laundering chain.
+
+---
+
+#### Feature 10 — `amt_velocity_24h`
+
+| | |
+|---|---|
+| **Input range** | $0 to $500,000+ |
+| **Typical legit value** | $20–$500 (a day's worth of normal spending) |
+| **Typical fraud value** | $5,000–$50,000 (large amounts moved quickly) |
+| **What you enter in the UI** | Total dollar amount transacted in the last 24 hours |
+
+**Background processing:**
+```
+amt_velocity_24h = SUM(TransactionAmt) for all transactions
+                   from this account in the last 24 hours
+```
+Rolling window sum instead of rolling window count. Computed alongside the velocity count features.
+
+**Why useful:** Captures the *scale* of recent activity, not just the count. 10 transactions of $5 each is low risk. 10 transactions of $5,000 each is critical. This feature combined with `velocity_24h` tells you both how many and how much — the combination exposes smurfing perfectly.
+
+---
+
+#### Feature 11 — `addr1`
+
+| | |
+|---|---|
+| **Input range** | 1 to 540 (billing address area codes from the dataset) |
+| **Typical legit value** | Any consistent code the customer usually uses |
+| **Typical fraud value** | –1 (unknown/missing — card used with no billing address) |
+| **What you enter in the UI** | Billing address area code integer (use –1 if unknown) |
+
+**Background processing:** Taken directly from the dataset's `addr1` column, which Vesta encoded as an integer. Missing values filled with –1.
+
+**Why useful:** A transaction with a missing billing address (`addr1 = –1`) is suspicious — legitimate online merchants usually require billing address for address verification (AVS). Fraudsters with stolen card numbers sometimes don't know the real billing address.
+
+---
+
+#### Feature 12 — `fraud_neighbors`
+
+| | |
+|---|---|
+| **Input range** | 0 to 1,000+ |
+| **Typical legit value** | 0 (device is not shared with any fraudulent accounts) |
+| **Typical fraud value** | 100–532 (device is shared with hundreds of fraud accounts) |
+| **What you enter in the UI** | How many fraud-confirmed accounts share this device |
+
+**Background processing (Neo4j query):**
+```cypher
+MATCH (a:Account {account_id: $id})-[:USES_DEVICE]->(d:Device)
+      <-[:USES_DEVICE]-(other:Account)-[:MADE]->(t:Transaction {isFraud: 1})
+RETURN count(DISTINCT other) as fraud_neighbors
+```
+This graph query finds all accounts that share a device with the target account AND have at least one confirmed fraud transaction. The result is joined into the feature table.
+
+**Why useful:** This is the graph's unique contribution — a feature that's impossible to compute from a single transaction row. If 532 accounts sharing your device are confirmed fraudsters, you are almost certainly part of the same fraud ring. No amount of individual transaction analysis would reveal this — it requires the graph.
+
+---
+
+#### Feature 13 — `shared_device_accounts`
+
+| | |
+|---|---|
+| **Input range** | 1 to 1,000+ |
+| **Typical legit value** | 1–3 (only your own accounts use your personal device) |
+| **Typical fraud value** | 100–1,200 (one device used across hundreds of fake accounts) |
+| **What you enter in the UI** | Total accounts (fraud and legit) sharing this device |
+
+**Background processing (Neo4j query):**
+```cypher
+MATCH (a:Account {account_id: $id})-[:USES_DEVICE]->(d:Device)
+      <-[:USES_DEVICE]-(other:Account)
+RETURN count(DISTINCT other) as shared_device_accounts
+```
+Similar to `fraud_neighbors` but counts *all* accounts sharing the device, not just fraudulent ones.
+
+**Why useful:** Even if none of the device-sharing accounts have been *confirmed* as fraud yet, a device shared across 500 accounts is still deeply suspicious. Legitimate users don't share their personal phone with 500 other bank accounts. This feature catches fraud rings before the fraud labels are confirmed — acting as an early warning.
+
+---
+
+#### Feature 14 — `device_known`
+
+| | |
+|---|---|
+| **Input range** | 0 or 1 (binary) |
+| **Typical legit value** | 1 (device has been seen before in the dataset) |
+| **Typical fraud value** | 0 (completely new device, never seen before) |
+| **What you enter in the UI** | Toggle: 1 = known device, 0 = unknown device |
+
+**Background processing:**
+```
+device_known = 1 if DeviceInfo appears more than once in the full dataset
+             = 0 if this is the first and only time this device string appears
+```
+Computed by grouping on the `DeviceInfo` column and checking count > 1.
+
+**Why useful:** A device that appears exactly once in 590K transactions is likely either a brand-new device being used for the first time (possible) or a spoofed device fingerprint (common fraud technique — fraudsters randomise device strings to avoid detection). Combined with `is_new_device`, this gives the model two angles on device novelty.
+
+---
+
+#### Feature 15 — `is_new_device`
+
+| | |
+|---|---|
+| **Input range** | 0 or 1 (binary) |
+| **Typical legit value** | 0 (customer uses the same device they always have) |
+| **Typical fraud value** | 1 (stolen card being used from the fraudster's own device) |
+| **What you enter in the UI** | Toggle: 1 = first time this account used this device |
+
+**Background processing:**
+```
+For each (account_id, DeviceInfo) pair:
+  is_new_device = 1 if this is the first transaction
+                  from this account on this device
+                = 0 if the account has used this device before
+```
+Done by sorting transactions by time and checking whether a (account, device) pair has appeared before in the time-ordered sequence.
+
+**Why useful:** A legitimate customer typically uses the same phone or laptop for months. If an account that has always used "MacBook Pro / macOS 14.2" suddenly makes a transaction from "SM-G960U Build/R16NW", someone else is using that account. This is the clearest signal that account credentials were stolen.
+
+---
+
+#### Feature 16 — `is_new_p_email`
+
+| | |
+|---|---|
+| **Input range** | 0 or 1 (binary) |
+| **Typical legit value** | 0 (purchaser email is the one the account always uses) |
+| **Typical fraud value** | 1 (new purchaser email — fraudster used a different contact) |
+| **What you enter in the UI** | Toggle: 1 = first time this purchaser email appeared on this account |
+
+**Background processing:** Same first-occurrence logic as `is_new_device`, applied to the (account_id, P_emaildomain) pair sorted by transaction time.
+
+**Why useful:** A real customer doesn't usually switch email providers. If an account always purchased with a `gmail.com` purchaser email and suddenly a transaction shows `P_emaildomain = yahoo.com`, someone else may have taken over the account with their own email address. This is a classic account takeover signal.
+
+---
+
+#### Feature 17 — `is_new_r_email`
+
+| | |
+|---|---|
+| **Input range** | 0 or 1 (binary) |
+| **Typical legit value** | 0 (money going to the same recipient domain as always) |
+| **Typical fraud value** | 1 (money going to a new recipient domain — possibly fraudster's account) |
+| **What you enter in the UI** | Toggle: 1 = first time money sent to this recipient email domain from this account |
+
+**Background processing:** Same first-occurrence logic on (account_id, R_emaildomain).
+
+**Why useful:** Combined with `r_email_domain = anonymous.com`, this is devastating. If an account has always sent money to `gmail.com` recipients and suddenly sends to `anonymous.com` for the first time, that's a very strong fraud signal. The "new recipient + disposable email" combination is what the SHAP chart shows as the top driver for most high-scoring transactions.
+
+---
+
+#### Feature 18 — `ProductCD`
+
+| | |
+|---|---|
+| **Input values** | W, H, C, S, R |
+| **Highest fraud rate** | W (transfer/wallet — most fraud) |
+| **Lowest fraud rate** | C, S (likely card-present or service purchases) |
+| **What you enter in the UI** | Select from dropdown |
+
+**Background processing:** Taken directly from the raw `ProductCD` column. LightGBM handles it as a categorical feature — it learns which product codes correlate with fraud during training rather than us hard-coding the mapping.
+
+**Why useful:** `ProductCD = W` (probably wallet or wire transfers) has the highest fraud rate in the dataset. Transfers are irreversible — once the money moves, the fraudster withdraws it immediately. Card-present transactions (C) are harder to do fraudulently because the physical card is needed.
+
+---
+
+#### Feature 19 — `card_network`
+
+| | |
+|---|---|
+| **Input values** | visa, mastercard, american express, discover |
+| **What you enter in the UI** | Select from dropdown |
+
+**Background processing:** Derived from `card4` column in the raw dataset, which Vesta encoded as the card network name. Treated as categorical by LightGBM.
+
+**Why useful:** Different card networks have different fraud prevention systems and liability rules. The model learns which networks appear more often in fraud cases from the training data. On its own this is a weak signal, but in combination with amount, time, and email domain it contributes.
+
+---
+
+#### Feature 20 — `card_type`
+
+| | |
+|---|---|
+| **Input values** | credit, debit, charge card |
+| **What you enter in the UI** | Select from dropdown |
+
+**Background processing:** Derived from `card6` column. Categorical feature.
+
+**Why useful:** Credit card fraud is more common than debit fraud because credit cards often have higher limits and delayed billing (victim notices later). The model learns this pattern. Also, charge cards (no preset limit) carry different fraud dynamics.
+
+---
+
+#### Feature 21 — `device_type`
+
+| | |
+|---|---|
+| **Input values** | desktop, mobile, Unknown |
+| **What you enter in the UI** | Select from dropdown |
+
+**Background processing:** Taken directly from the `DeviceType` column. Many transactions have `Unknown` device type (the transaction was made without a browser/app — possibly via API or automated script).
+
+**Why useful:** `Unknown` device type is a red flag — it often means the transaction was submitted programmatically, not by a human interacting with a website. Fraudsters use automated scripts to run card-testing attacks. Also, mobile vs. desktop fraud patterns differ — mobile fraud is more common in certain product categories.
+
+---
+
+#### Feature 22 — `p_email_domain` and `r_email_domain`
+
+| | |
+|---|---|
+| **Input values** | gmail.com, yahoo.com, anonymous.com, hotmail.com, and many others |
+| **Highest fraud rate** | anonymous.com (disposable email — strongest single fraud signal in the dataset) |
+| **What you enter in the UI** | Select from dropdown |
+
+**Background processing:** Taken from `P_emaildomain` and `R_emaildomain` columns. Categorical features — LightGBM learns the fraud rate associated with each domain during training. Unknown domains not in training data fall back to a default category.
+
+**Why useful:** `anonymous.com` is a disposable email provider — you can create a temporary email address in seconds with no identity verification. Fraudsters receive money to anonymous.com addresses and immediately move it on. In the training data, `r_email_domain = anonymous.com` is the single strongest predictor of fraud. A transaction to anonymous.com is ~8× more likely to be fraud than the baseline rate.
+
+---
+
+### End-to-End Flow with Real Numbers
+
+Here's what happens from the moment you click "Score Transaction" to the result appearing:
+
+```
+User inputs 22 feature values
+        │
+        ▼
+score_transaction(features) called in risk_model/score.py
+        │
+        ├── Build a 1-row DataFrame with all 22 columns
+        │
+        ├── Cast 6 categorical columns (ProductCD, card_network, card_type,
+        │   device_type, p_email_domain, r_email_domain) to pd.CategoricalDtype
+        │   with exactly the category lists from training
+        │   (prevents "unknown category" errors for new values)
+        │
+        ├── Call model.predict_proba(X)[:, 1]
+        │   → Returns probability of class 1 (fraud)
+        │   → e.g. 0.9214
+        │
+        ├── Call shap.TreeExplainer(model).shap_values(X)
+        │   → Returns a vector of 22 SHAP values, one per feature
+        │   → e.g. [r_email_domain: +0.96, tx_hour: +0.65, ...]
+        │
+        ├── Sort SHAP values by |magnitude|, take top 5
+        │
+        └── Return {risk_score: 0.9214, risk_tier: "critical",
+                    top_features: [...top 5 SHAP drivers...]}
+```
+
+Total time from input to output: **< 200ms** (the model is loaded once and cached in memory).
+
+---
+
+### What Happens During SAR Generation (Background)
+
+```
+User selects ACC_15063, clicks "Generate SAR"
+        │
+        ▼
+Step 1 — Neo4j query (< 1 second)
+  Pull: all transactions, total amount, transaction count
+  Pull: devices this account uses
+  Pull: other accounts sharing those devices + their fraud flags
+        │
+        ▼
+Step 2 — LightGBM scoring (< 200ms)
+  Score the highest-value transaction to get risk_score + SHAP explanation
+        │
+        ▼
+Step 3 — ChromaDB retrieval (~3 seconds, includes model load)
+  Embed the query: "suspicious activity structuring PMLA STR filing obligation"
+  Search 85 regulatory chunks by cosine similarity
+  Return top 5 most relevant regulation excerpts
+        │
+        ▼
+Step 4 — Claude API call via AWS Bedrock (~20 seconds)
+  Send: account data + transaction history + SHAP explanation +
+        fraud ring summary + 5 regulatory excerpts
+  Receive: 800-word SAR with 7 sections, citing exact regulation text
+        │
+        ▼
+Output displayed in UI, available for download as .txt
+```
+
+**Total: ~25–35 seconds.** The bottleneck is the Bedrock API call — Claude takes time to generate 800 carefully structured words. This is intentional: the output quality (complete, cited, structured SAR) justifies the wait vs. a 2–4 hour manual effort.
+
+---
+
 ## Tech stack summary
 
 | Component | Technology | Why |
