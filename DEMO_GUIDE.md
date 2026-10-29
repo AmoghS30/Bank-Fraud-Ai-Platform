@@ -175,47 +175,45 @@ Three scenarios showing exactly what to type in the UI and what the model return
 
 ---
 
-### Scenario A — Critical Fraud (Score ≈ 0.92+)
+### Scenario A — Critical Fraud (Score ≈ 0.95+)
 
-This represents a stolen credit card being used by a fraudster at 3am, sending money to a disposable email, from a device shared by hundreds of fraud accounts.
+This represents a stolen credit card being used by a fraudster at 3am from a new mobile device, rapidly making hotel/hospitality payments — the actual pattern the model learned as highest-risk from 472K training transactions.
 
-| Feature | Value to enter | Why this value screams fraud |
+> **Important note:** The model learned from real IEEE-CIS data, not intuition. Some results are counterintuitive — e.g. `gmail.com` as recipient scores *higher* than `anonymous.com` because in the real dataset, most confirmed fraud went to gmail accounts (fraudsters use legitimate-looking emails). `ProductCD = H` (hospitality/hotel) has a higher fraud rate in the data than `W` (transfers). These are facts learned from data, not bugs.
+
+| Feature | Value to enter | Why this value drives the score |
 |---|---|---|
-| `TransactionAmt` | 500.0 | Significant amount |
-| `amt_zscore` | 3.2 | Transaction is 3.2× above this account's normal range |
-| `amt_to_mean_ratio` | 4.1 | This transaction is 4× the account's average spend |
-| `account_tx_count` | 5 | Brand-new account — only 5 lifetime transactions |
-| `tx_hour` | 3 | 3am — owner is asleep, won't notice alert |
-| `tx_day_of_week` | 6 | Sunday — reduced bank monitoring |
-| `velocity_1h` | 8 | 8 transactions in the last hour — card testing |
-| `velocity_24h` | 15 | 15 transactions today |
-| `velocity_7d` | 20 | 20 transactions this week |
-| `amt_velocity_24h` | 4500.0 | $4,500 moved today |
-| `addr1` | -1 | Billing address unknown — AVS bypass attempt |
-| `fraud_neighbors` | 100 | 100 confirmed fraud accounts share this device |
-| `shared_device_accounts` | 500 | 500 accounts use this one device |
-| `device_known` | 0 | Device has never been seen before |
-| `is_new_device` | 1 | First time this account used this device |
-| `is_new_p_email` | 1 | New purchaser email on this account |
-| `is_new_r_email` | 1 | First time money sent to this recipient domain |
-| `ProductCD` | W | Transfer/wallet — irreversible, fraudster favourite |
-| `card_network` | visa | — |
-| `card_type` | credit | Higher limit, delayed billing = victim notices later |
-| `device_type` | mobile | — |
-| `p_email_domain` | gmail.com | — |
-| `r_email_domain` | anonymous.com | Disposable email — strongest single fraud signal |
+| `TransactionAmt` | **450** | High amount |
+| `Product Code` | **H** | Hospitality/hotel — highest fraud rate in training data |
+| `Card Type` | **credit** | Higher limit, delayed billing |
+| `Card Network` | visa | — |
+| `Device Type` | **mobile** | Mobile transactions have elevated fraud rate in this dataset |
+| `Purchaser Email` | gmail.com | — |
+| `Recipient Email` | **gmail.com** | Counterintuitive but correct — model learned most fraud goes to gmail |
+| `Hour of day` | **3** | 3am |
+| `Day of week` | **6** | Sunday |
+| `Last 1h` | **5** | 5 transactions in last hour — card testing pattern |
+| `Last 24h` | **12** | Sustained activity |
+| `Last 7d` | **18** | High weekly volume |
+| `Account tx count` | **3** | Brand-new account |
+| `Fraud neighbours` | **50** | 50 fraud accounts share this device |
+| `Shared device accounts` | **200** | 200 accounts on one device |
+| `New device?` | **☑** | First time on this device |
+| `New purchaser email?` | **☑** | New email on this account |
+| `New recipient email?` | **☑** | New recipient |
+| `Account avg tx amount` | **75** | Account normally spends $75, this is $450 — 6× above normal |
 
 **Expected output:**
 ```
-Risk Score:  0.92 – 0.97
+Risk Score:  0.95 – 0.97
 Risk Tier:   CRITICAL 🔴
 
 Top SHAP drivers:
-  r_email_domain    +0.96   increases_risk   ← anonymous.com is a huge red flag
-  tx_hour           +0.65   increases_risk   ← 3am transaction
-  is_new_device     +0.43   increases_risk   ← first time on this device
-  amt_zscore        +0.31   increases_risk   ← amount far above account's norm
-  velocity_1h       +0.18   increases_risk   ← 8 transactions in 1 hour
+  TransactionAmt    +1.41   increases_risk   ← $450 on a $75-average account
+  r_email_domain    +1.05   increases_risk   ← gmail.com pattern learned from data
+  device_type       +0.52   increases_risk   ← mobile device
+  ProductCD         +0.52   increases_risk   ← H (hospitality) is high-fraud category
+  p_email_domain    +0.42   increases_risk   ← gmail.com purchaser pattern
 ```
 
 ---
